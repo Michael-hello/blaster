@@ -14,8 +14,7 @@
 <script lang="ts">
 
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { BlasterContext, KeyPressEvent } from './framework';
-import { ShipContext } from "./framework";
+import { ShipContext } from "../../framework";
 
 @Component({})
 export default class Ship extends Vue {
@@ -25,7 +24,7 @@ export default class Ship extends Vue {
     loaded = true;
     
     async mounted(){
-       
+       console.log('SHIP',this.context, this.context.positionX)
     };
 
     get shipX(){ return this.context.positionX }

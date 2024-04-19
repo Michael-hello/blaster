@@ -14,7 +14,7 @@
 
 import { Component, Vue, Prop } from "vue-property-decorator";
 import Animation from './Animation.vue';
-import { BlasterContext } from './framework';
+import { MainContext, OptionsService, ShipBuilder } from '../framework';
 
 
 @Component({
@@ -24,13 +24,15 @@ import { BlasterContext } from './framework';
 })
 export default class Container extends Vue {
 
-  context: BlasterContext = null;
+  context: MainContext = null;
   loaded = false;
 
-  async mounted(){
-    this.context = new BlasterContext();
+  async created(){
+    let optionsService = new OptionsService();
+    let shipBuilder = new ShipBuilder(optionsService);
+    this.context = new MainContext(optionsService, shipBuilder);
     this.loaded = true;
-  }
+  };
 
 }
 

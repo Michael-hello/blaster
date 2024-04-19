@@ -19,10 +19,9 @@
 <script lang="ts">
 
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { BlasterContext, KeyPressDown, KeyPressUp } from './framework';
-import Ship from './Ship.vue';
+import { MainContext, KeyPressDown, KeyPressUp, keys } from '../framework';
+import Ship from './elements/Ship.vue';
 
-const keys = [ 'w', 'a', 's', 'd' ];
 
 @Component({
   components: {
@@ -31,9 +30,9 @@ const keys = [ 'w', 'a', 's', 'd' ];
 })
 export default class Animation extends Vue {
 
-    @Prop({ required: true }) context: BlasterContext;
+    @Prop({ required: true }) context: MainContext;
 
-    loaded = true;
+    loaded = false;
     elmTop = 0;
     elmLeft = 0;
     elmHeight = 0;
@@ -53,7 +52,6 @@ export default class Animation extends Vue {
         window.addEventListener('keydown', (e) => this.keyDown(e));
         window.addEventListener('keyup', (e) => this.keyUp(e));
 
-
         let cllBck = () => {
             let size = (this.$refs.elmt as HTMLElement).getBoundingClientRect();
             this.elmLeft = size.left;
@@ -66,6 +64,7 @@ export default class Animation extends Vue {
         cllBck();
         this.context.initialise(this.elmWidth, this.elmHeight);
         this.observeHeight(cllBck);
+        this.loaded = true;
     };
 
     observeHeight(cllBck: () => void) {
