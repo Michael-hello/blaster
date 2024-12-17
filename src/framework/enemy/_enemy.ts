@@ -25,39 +25,45 @@ export class Enemy extends SubscriptionHandler  implements IEnemy {
         super();
     };
 
-    updatePosition(position: [ number, number ]){
+    public updatePosition(position: [ number, number ]){
         this.x = position[0];
         this.y = position[1];
     };
 
-    updateTrajectory(traj: number){
+    private updateTrajectory(traj: number){
         this.trajectory = wrapAngle(traj);
     };
 
-    startHunting(){
+    public startHunting(){
 
         /** sets initial trajectory to be directly towards the ship */
         let traj = this.trajToShip();
+        console.log('traj', traj)
         this.updateTrajectory(traj);
 
         // console.log(traj, this.x, this.y, this.shipLocation)
 
-        let interval = setInterval(() => { 
-            this.moveTowardsShip();
-         }, this.options.enemySpeed * 10 );
+        // let interval = setInterval(() => { 
+        //     this.moveTowardsShip();
+        //  }, this.options.enemySpeed * 10 );
 
-         this.intervals.push(interval);
+        //  this.intervals.push(interval);
     };
 
 
     /** returns angle in degrees */
     private trajToShip(){
-        // let x = this.x - this.shipLocation.x;
-        // let y = this.y - this.shipLocation.y;
-        // let theta = Math.atan(x/y);
-        let dot = (this.x * this.shipLocation.x) + (this.y * this.shipLocation.y);
-        let det = (this.x * this.shipLocation.y) - (this.y*this.shipLocation.x);
-        let theta = Math.atan2(det, dot);
+
+        // https://onlinemschool.com/math/assistance/vector/angl/
+        let ship = this.shipLocation;
+        let dotProduct = (this.x * ship.x) + (this.y * ship.y);
+        let magA = Math.sqrt( Math.pow(this.x, 2) + Math.pow(this.y, 2) ); //maginutude of enemy vector
+        let magB = Math.sqrt( Math.pow(ship.x, 2) + Math.pow(ship.y, 2) ); //maginutude of ship vector
+        let theta = Math.acos( dotProduct / ( magA * magB ) );
+
+        // let dot = (this.x * this.shipLocation.x) + (this.y * this.shipLocation.y);
+        // let det = (this.x * this.shipLocation.y) - (this.y*this.shipLocation.x);
+        // let theta = Math.atan2(det, dot);
         return radToDegree(theta);
     };
 

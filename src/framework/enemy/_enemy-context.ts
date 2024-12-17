@@ -1,5 +1,5 @@
 import { filter, type Subject } from "rxjs";
-import { BaseContext, ShipMoveEvent, isShipMoveEvent, type Event, type IOptions, type IPageState } from "..";
+import { type ILocation, BaseContext, ShipMoveEvent, isShipMoveEvent, type Event, type IOptions, type IPageState } from "..";
 import { Enemy, type IEnemy } from "./_enemy";
 import type { IEnemyCtxState } from "./_enemy-builder";
 
@@ -18,11 +18,11 @@ export class EnemyManager extends BaseContext {
     get rateIncreasePower() { return this.options.rateIncreasePower };
     get enemySpeed() { return this.options.enemySpeed };
 
-    shipLocation: { x: number, y: number } = { x: 0, y: 0 };
+    shipLocation: ILocation = { x: 0, y: 0 };
 
     constructor(
         state: IEnemyCtxState,
-        private options: IOptions
+        private options: IOptions,
     ){ 
         super();
         this.enemies = state.enemies
@@ -39,11 +39,13 @@ export class EnemyManager extends BaseContext {
         this.page = state;
     };
 
-    initialise(events: Subject<Event>, page: IPageState){
+    initialise(events: Subject<Event>, page: IPageState, ship: ILocation){
         if(this.initialised) 
             throw Error('Alreayd initialised');
-        
+
         this.events = events;
+        this.shipLocation.x = ship.x;
+        this.shipLocation.y = ship.y;
 
         let sub1 = this.events.pipe(
         ).subscribe((event) => {
@@ -77,21 +79,20 @@ export class EnemyManager extends BaseContext {
     addEnemies(count: number){
 
         for(let i = 0; i < count; i++){
-            console.log('CALLED', count)
             let enemy = new Enemy(this.enemySpeed, this.shipLocation, this.options);
             this.enemies.push(enemy);
             let index = i % 4;
-
-            index = 2;           
             let start = this.startPos[index] as [ number, number ];
+
+            index = 2;   
 
             if(index == 1) start[0] -= 2 * this.options.enemySize;
             if(index == 2) start[1] -= 2 * this.options.enemySize;
 
+            start = [100, 600]        
             enemy.updatePosition(start);
-            enemy.startHunting();
-            break;
-            
+            enemy.startHunting();            
+            console.log('ADDING ENEMY', count, enemy, index, start)
         }
     };
 

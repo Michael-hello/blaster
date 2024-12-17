@@ -44,7 +44,7 @@ export class MainContext extends BaseContext {
         this.enemy = this.enemyBuilder.build();
 
         this.ship.initialise(this.events, this.page);
-        this.enemy.initialise(this.events, this.page);
+        this.enemy.initialise(this.events, this.page, { x: this.ship.x, y: this.ship.y });
 
         if(width != null && height != null)
             this.updateDiemnsions(width, height);
