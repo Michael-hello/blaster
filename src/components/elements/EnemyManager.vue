@@ -26,7 +26,7 @@ export default class EnemyManager extends Vue {
     @Prop({ required: true }) context: EnemyManager;
     @Prop({ required: true }) options: IOptions;
 
-    get enemies(){ return this.context.enemies };   
+    get enemies(){ return this.context.enemies };  
 
 }
 

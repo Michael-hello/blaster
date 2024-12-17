@@ -29,12 +29,12 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { MainContext, KeyPressDown, KeyPressUp, keys, Enemy, IOptions, altKeys } from '../framework';
 import Ship from './elements/Ship.vue';
-import EnemyView from './elements/Enemy.vue';
+import EnemyManager from './elements/EnemyManager.vue';
 
 @Component({
   components: {
     Ship,
-    EnemyView
+    EnemyManager
   }
 })
 export default class Animation extends Vue {

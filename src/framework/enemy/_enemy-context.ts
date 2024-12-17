@@ -78,8 +78,10 @@ export class EnemyManager extends BaseContext {
 
     addEnemies(count: number){
 
+        const getShipLocation = () => this.shipLocation
+
         for(let i = 0; i < count; i++){
-            let enemy = new Enemy(this.enemySpeed, this.shipLocation, this.options);
+            let enemy = new Enemy(this.enemySpeed, getShipLocation, this.options);
             this.enemies.push(enemy);
             let index = i % 4;
             let start = this.startPos[index] as [ number, number ];
@@ -89,7 +91,7 @@ export class EnemyManager extends BaseContext {
             if(index == 1) start[0] -= 2 * this.options.enemySize;
             if(index == 2) start[1] -= 2 * this.options.enemySize;
 
-            start = [100, 600]        
+            start = [300, 350]        
             enemy.updatePosition(start);
             enemy.startHunting();            
             console.log('ADDING ENEMY', count, enemy, index, start)

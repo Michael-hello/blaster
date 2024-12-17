@@ -29,6 +29,10 @@ export default class Enemy extends Vue {
     get enemyX(){ return this.enemy.x };
     get enemyY(){ return this.enemy.y };
 
+    mounted() {
+        // console.log('enemy', this.enemyX, this.enemyY)
+    }
+
 }
 
 </script>
