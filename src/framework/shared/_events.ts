@@ -11,6 +11,9 @@ export const KeyPressUp = 'topic:key:up';
 export const ShipMoveEvent = "topic:ship:move";
 export const ShipSmashGate = "topic:ship:gate:smash";
 
+export const ShipEnemyCollision = "topic:enemy:collision";
+export const ShipGateCollision = "topic:gate:collision";
+
 export interface UserEvent extends Event {
     key: string   
 };
@@ -25,4 +28,22 @@ export function isUserEvent(event: Event): event is UserEvent {
 export function isShipMoveEvent(event: Event): event is ShipMoveEvent {
     return event.topic == ShipMoveEvent;
 };
+export function isGameOverEvent(event: Event) {
+    return event.topic == ShipEnemyCollision || event.topic == ShipGateCollision;
+};
+
+
+/**
+ *  types of events:
+ * 
+ *      - gate collision - ship death
+ *      - gate collision - enemy death : explosion_radius
+ *      - enemy collison - ship death
+ * 
+ *      - gate spawn
+ *      - enemy spawn
+ * 
+ *      - enemy move 
+ *      - gate rotation
+ */
 

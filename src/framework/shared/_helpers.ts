@@ -1,7 +1,6 @@
 
 
 
-
 export function radToDegree(rad: number) {
     let scalar = 180/Math.PI;
     let deg = rad * scalar;

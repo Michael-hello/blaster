@@ -70,7 +70,7 @@ export class ShipContext extends BaseContext {
     };
 
     move(){
-        let move = this.options.shipSpeed;
+        let move = this.options.shipSpeed / this.options.difficulty;
         let size = this.options.shipSize / 2;
 
         if(this.keyDown['w']) this.updateLocation({ y: Math.max(0, this.y - move - size) });

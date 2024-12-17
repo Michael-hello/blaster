@@ -1,4 +1,4 @@
-import { degreeToRad, radToDegree, SubscriptionHandler, wrapAngle, type IOptions, type ILocation } from "../shared";
+import { degreeToRad, radToDegree, SubscriptionHandler, wrapAngle, type IOptions, type ILocation, CollisionCheck } from "../shared";
 
 export interface IEnemy {
     x: number;
@@ -13,24 +13,31 @@ export class Enemy extends SubscriptionHandler  implements IEnemy {
     public x = 0;
     public y = 0;
 
-    /** current trajectory in degrees */
-    private trajectory = 0;    
+    /** trajectory always in degrees */
+    private currentTrajectory = 0;    
+    private previousTrajectories: number[] = [];
         
     constructor(     
-        private move: number, //amount to move by in pixels
+        private collisionDetected: () => void,
         private getShipLocation: () => ILocation,
         private options: IOptions
     ){
         super();
     };
 
-    public updatePosition(position: [ number, number ]){
-        this.x = position[0];
-        this.y = position[1];
+    public updatePosition(position: ILocation){
+        this.x = position.x;
+        this.y = position.y;
+
+        let opts = this.options;
+        let ship = this.getShipLocation();
+        let collided = CollisionCheck(ship, position, opts.shipSize / 2, opts.enemySize / 2);
+        if(collided) this.collisionDetected();
     };
 
     private updateTrajectory(traj: number){
-        this.trajectory = wrapAngle(traj);
+        this.currentTrajectory = wrapAngle(traj);
+        this.previousTrajectories.push(traj);
     };
 
     public startHunting(){
@@ -39,9 +46,10 @@ export class Enemy extends SubscriptionHandler  implements IEnemy {
         let traj = this.trajToShip();
         this.updateTrajectory(traj);
 
+        let cycleLength = 100 / this.options.difficulty;
         let interval = setInterval(() => { 
             this.moveTowardsShip();
-         }, this.options.enemySpeed * 10 );
+         }, cycleLength );
 
          this.intervals.push(interval);
     };
@@ -49,7 +57,6 @@ export class Enemy extends SubscriptionHandler  implements IEnemy {
 
     /** returns angle in degrees */
     private trajToShip(){
-
         let ship = this.getShipLocation();
         let dx = ship.x - this.x;
         let dy = -(ship.y - this.y);
@@ -65,62 +72,21 @@ export class Enemy extends SubscriptionHandler  implements IEnemy {
 
     private moveTowardsShip() {
 
-        let theta = degreeToRad(this.trajectory);
-        let r = this.move;
+        let traj = this.currentTrajectory;
+        let prev = this.previousTrajectories;
+        
+        //TO DO: adjust the value based on difficulty setting and enemy speed
+        if(prev.length > 10) 
+            traj = prev[prev.length - 10];
+
+        let theta = degreeToRad(traj);
+        let r = this.options.enemySpeed;
         let xOffset = Math.sin(theta) * r;
         let yOffset = Math.cos(theta) * r;
-        let newPos = [ this.x + xOffset, this.y - yOffset ] as [number, number];
+        let newPos: ILocation = { x:  this.x + xOffset, y: this.y - yOffset  };
         this.updatePosition(newPos);
 
-        this.trajectory = this.trajToShip();
-
-        /**updates trajectory */
-        // let maxAllowableRotation = 30; //degrees
-        // let traj = this.trajToShip();
-        // let current = this.trajectory;
-
-        // let dif1 = wrapAngle(traj - current); //anticlockwise
-        // let dif2 = wrapAngle(current - traj); //clockwise
-
-        // if(Math.min(dif1,dif2) < maxAllowableRotation){
-        //     this.updateTrajectory(traj);
-        // }
-        // else if(dif1 < dif2) 
-        //     this.updateTrajectory(current - maxAllowableRotation);
-        // else
-        //     this.updateTrajectory(current + maxAllowableRotation);
-
-        // /** moves along given trajectory */
-        // let theta = this.trajectory;
-        // let xScalar = 1;
-        // let yScalar = 1;
-
-        // /**TO DO: probably a cleaner way to calc new pos */
-        // if(this.trajectory > 90) {
-        //     theta = 180 - this.trajectory;
-        //     yScalar = -1;
-        //     xScalar = 1;
-        // };
-
-        // if(this.trajectory > 180){
-        //     theta = 270 - this.trajectory;
-        //     yScalar = -1;
-        //     xScalar = -1;
-        // };
-
-        // if(this.trajectory > 270){
-        //     theta = 360 - this.trajectory;
-        //     yScalar = 1;
-        //     xScalar = -1;
-        // };
-
-        // let hyp = this.move;
-        // let yOffset = (Math.cos(degreeToRad(theta)) * hyp) * xScalar;
-        // let xOffset = (Math.sin(degreeToRad(theta)) * hyp) * yScalar;
-
-        // let x = this.x + xOffset;
-        // let y = this.y + (yOffset * -1);
-        // this.updatePosition([x,y]);
+        this.updateTrajectory(this.trajToShip());
 
     };
 

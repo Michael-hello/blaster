@@ -65,7 +65,9 @@ export default class Animation extends Vue {
         window.addEventListener('keyup', (e) => this.keyUp(e));
 
         let cllBck = () => {
-            let size = (this.$refs.elmt as HTMLElement).getBoundingClientRect();
+            let elmt = this.$refs.elmt as HTMLElement;
+            if(elmt == null) return;
+            let size = elmt.getBoundingClientRect();
             this.elmLeft = size.left;
             this.elmTop = size.top;
             this.elmHeight = Math.ceil(size.height);

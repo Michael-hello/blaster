@@ -1,5 +1,5 @@
 import { filter, type Subject } from "rxjs";
-import { type ILocation, BaseContext, ShipMoveEvent, isShipMoveEvent, type Event, type IOptions, type IPageState } from "..";
+import { type ILocation, ShipEnemyCollision, BaseContext, ShipMoveEvent, isShipMoveEvent, type Event, type IOptions, type IPageState } from "..";
 import { Enemy, type IEnemy } from "./_enemy";
 import type { IEnemyCtxState } from "./_enemy-builder";
 
@@ -14,7 +14,7 @@ export class EnemyManager extends BaseContext {
     private page: IPageState = null as any;
     private initialised = false;
 
-    get spawnRate() { return this.options.spawnRate };
+    get spawnRate() { return this.options.spawnRateEnemy };
     get rateIncreasePower() { return this.options.rateIncreasePower };
     get enemySpeed() { return this.options.enemySpeed };
 
@@ -78,21 +78,22 @@ export class EnemyManager extends BaseContext {
 
     addEnemies(count: number){
 
-        const getShipLocation = () => this.shipLocation
+        const getShipLocation = () => this.shipLocation;
+        const collisionDetected = () => this.events.next({ topic: ShipEnemyCollision });
 
         for(let i = 0; i < count; i++){
-            let enemy = new Enemy(this.enemySpeed, getShipLocation, this.options);
+            let enemy = new Enemy(collisionDetected, getShipLocation, this.options);
             this.enemies.push(enemy);
             let index = i % 4;
             let start = this.startPos[index] as [ number, number ];
 
-            index = 2;   
+            // index = 2;   
 
             if(index == 1) start[0] -= 2 * this.options.enemySize;
             if(index == 2) start[1] -= 2 * this.options.enemySize;
 
-            start = [300, 350]        
-            enemy.updatePosition(start);
+            // start = [300, 350]        
+            enemy.updatePosition({ x: start[0], y: start[1] });
             enemy.startHunting();            
             console.log('ADDING ENEMY', count, enemy, index, start)
         }
