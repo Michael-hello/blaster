@@ -18,6 +18,10 @@ import Container from './Container.vue';
     Container
   }
 })
+/** 
+ * The purpose of this component is to import the blaster app from Container as well as 
+ * provide a location for extraneous functionality such as user login
+ **/
 export default class Main extends Vue {
 
 }

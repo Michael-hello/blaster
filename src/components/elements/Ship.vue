@@ -1,8 +1,8 @@
 <template>
 
     <rect 
-        width="10" 
-        height="10" 
+        :width="size" 
+        :height="size" 
         :x=shipX 
         :y=shipY 
         style="fill:rgb(13,56,255); stroke-width:3; stroke:rgb(13,56,255)" 
@@ -14,21 +14,28 @@
 <script lang="ts">
 
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { ShipContext } from "../../framework";
+import { IOptions, ShipContext } from "../../framework";
 
 @Component({})
 export default class Ship extends Vue {
 
     @Prop({ required: true }) context: ShipContext;
+    @Prop({ required: true }) options: IOptions;
 
     loaded = true;
     
     async mounted(){
-       console.log('SHIP',this.context, this.context.positionX)
+       console.log('SHIP',this.context, this.context.x, this.options)
     };
 
-    get shipX(){ return this.context.positionX }
-    get shipY(){ return this.context.positionY }
+    get size() { return this.options.shipSize }
+
+    /** x and y attributes defines y-position of the top-left corner of the rect 
+     * therefore need to correct for ship size */
+    get shipX(){ return this.context.x }
+    get shipY(){ return this.context.y  }
+
+
 
 }
 

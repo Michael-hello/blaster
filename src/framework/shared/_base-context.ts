@@ -1,7 +1,8 @@
 import type { SubscriptionLike } from "rxjs";
 
 
-export abstract class BaseContext {
+
+export abstract class SubscriptionHandler {
 
     public subscriptions: SubscriptionLike[] = [];
     public intervals: NodeJS.Timer[] = [];
@@ -19,4 +20,14 @@ export abstract class BaseContext {
                 clearInterval(int)
         };
     }
-}
+};
+
+
+
+export class BaseContext extends SubscriptionHandler {
+
+    constructor(){
+        super()
+    }
+   
+};

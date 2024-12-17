@@ -9,7 +9,12 @@
         xmlns="http://www.w3.org/2000/svg"
         version="1.2"
     >
-      <ship :context=shipContext />
+      <ship 
+        :context=shipContext 
+        :options="options"
+      />
+
+      <enemy-view v-for="enemy in enemies" :key="enemy.id" :enemy=enemy />
 
     </svg>
   </div>
@@ -19,18 +24,20 @@
 <script lang="ts">
 
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { MainContext, KeyPressDown, KeyPressUp, keys } from '../framework';
+import { MainContext, KeyPressDown, KeyPressUp, keys, Enemy, IOptions, altKeys } from '../framework';
 import Ship from './elements/Ship.vue';
-
+import EnemyView from './elements/Enemy.vue';
 
 @Component({
   components: {
-    Ship
+    Ship,
+    EnemyView
   }
 })
 export default class Animation extends Vue {
 
     @Prop({ required: true }) context: MainContext;
+    @Prop({ required: true }) options: IOptions;
 
     loaded = false;
     elmTop = 0;
@@ -38,7 +45,9 @@ export default class Animation extends Vue {
     elmHeight = 0;
     elmWidth = 0;
 
-    get shipContext(){ return this.context.ship }
+    get shipContext(){ return this.context.ship };
+
+    get enemies(){ return this.context.enemy.enemies };
 
     get viewbox() {
         let offX = this.elmLeft;
@@ -62,8 +71,9 @@ export default class Animation extends Vue {
         };
 
         cllBck();
-        this.context.initialise(this.elmWidth, this.elmHeight);
         this.observeHeight(cllBck);
+
+        this.context.initialise(this.elmWidth, this.elmHeight);
         this.loaded = true;
     };
 
@@ -75,24 +85,34 @@ export default class Animation extends Vue {
         resizeObserver.observe(document.getElementById('svg-container'));
     };
 
-    mouseMove(event: MouseEvent){
-        // console.log(event)
-    };
-
     keyDown(event: KeyboardEvent){
-      let valid = keys.find(x => x == event.key) != null;
-      if(valid)  this.context.events.next({ topic: KeyPressDown, key: event.key });
+      this.processKey(event.key, KeyPressDown);
     };
 
     keyUp(event: KeyboardEvent){
-      let valid = keys.find(x => x == event.key) != null;
-      if(valid)  this.context.events.next({ topic: KeyPressUp, key: event.key });
+      this.processKey(event.key, KeyPressUp);
+    };
+
+    processKey(key: string, direction: string) {
+      let isAltKey = altKeys.find(x => x == key) != null;
+      if(isAltKey) key = this.mapAltKey(key);
+
+      let valid = keys.find(x => x == key) != null;
+      if(valid)  this.context.events.next({ topic: direction, key: key });
+    };
+
+    /** maps an alternative key to a WASD key */
+    mapAltKey(key: string) : string {
+      if( key == 'ArrowRight' ) return 'd';
+      if( key == 'ArrowLeft' ) return 'a';
+      if( key == 'ArrowUp' ) return 'w';
+      if( key == 'ArrowDown' ) return 's'; 
     };
 
     beforeDestroy(){
-        window.removeEventListener('keydown', (e) => this.keyDown(e));
-        window.removeEventListener('keyup', (e) => this.keyUp(e));
-    }
+      window.removeEventListener('keydown', (e) => this.keyDown(e));
+      window.removeEventListener('keyup', (e) => this.keyUp(e));
+    };
 
 }
 

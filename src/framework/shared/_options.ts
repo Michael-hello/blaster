@@ -6,31 +6,27 @@ export interface IOptions {
     spawnRate: number;
     rateIncreasePower: number;
     enemySpeed: number;
+    enemySize: number;
 
     /** ship options */
-    shipSpeed: number;
+    shipSpeed: number; 
     shipSize: number; //in pixels
-}
-
-export class Options implements IOptions {
-
-    constructor(){
-
-    };
-
-    /** enemy options */
-    spawnRate = 1;
-    rateIncreasePower = 3;
-    enemySpeed = 12;
-
-    /** ship options */
-    shipSpeed = 12;
-    shipSize = 10;
+    shipReloadRate: number; //in ms
 };
+
 
 /** abstract so can load in from a different source in the future */
 export class OptionsService {
-    getOptions() {
-        return new Options();
+
+    getOptions() : IOptions {
+        return {
+            spawnRate: 4,
+            rateIncreasePower: 3,
+            enemySpeed: 4,
+            enemySize: 10,
+            shipSpeed: 12,
+            shipSize: 10,
+            shipReloadRate: 30
+        }
     };
 };

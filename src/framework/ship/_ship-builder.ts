@@ -10,8 +10,10 @@ export class ShipBuilder implements IBuilder<ShipContext, IShipState> {
     build(): ShipContext {
 
         let state: IShipState = {
-            positionX: 0,
-            positionY: 0,
+            location: {
+                x: 0,
+                y: 0
+            },
             lives: 3
         };
 
