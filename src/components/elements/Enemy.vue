@@ -22,7 +22,7 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import { IEnemy } from "../../framework";
 
 @Component({})
-export default class Enemy extends Vue {
+export default class EnemyView extends Vue {
 
     @Prop({ required: true }) enemy: IEnemy;
 

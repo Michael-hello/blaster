@@ -21,6 +21,7 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import Animation from './Animation.vue';
 import { BaseContext, EnemyBuilder, IOptions, isGameOverEvent, MainContext, OptionsService, ShipBuilder, SubscriptionHandler } from '../framework';
 import {  filter } from "rxjs/operators";
+import { GateBuilder } from "../framework/gates";
 
 
 @Component({
@@ -44,8 +45,9 @@ export default class Container extends Vue {
     let optionsService = new OptionsService();
     let shipBuilder = new ShipBuilder(optionsService);
     let enemyBuilder = new EnemyBuilder(optionsService);
+    let gateBuilder = new GateBuilder(optionsService);
 
-    this.context = new MainContext(optionsService, shipBuilder, enemyBuilder);
+    this.context = new MainContext(shipBuilder, enemyBuilder, gateBuilder);
     this.options = optionsService.getOptions();
     this.loaded = true;
 

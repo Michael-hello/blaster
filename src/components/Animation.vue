@@ -19,6 +19,11 @@
         :options="options"
       />
 
+      <gate-manager 
+        :context=gateContext
+        :options="options"
+      />
+
     </svg>
   </div>
 </template>
@@ -30,11 +35,13 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import { MainContext, KeyPressDown, KeyPressUp, keys, Enemy, IOptions, altKeys } from '../framework';
 import Ship from './elements/Ship.vue';
 import EnemyManager from './elements/EnemyManager.vue';
+import GateManager from './elements/GateManager.vue';
 
 @Component({
   components: {
     Ship,
-    EnemyManager
+    EnemyManager,
+    GateManager
   }
 })
 export default class Animation extends Vue {
@@ -51,6 +58,8 @@ export default class Animation extends Vue {
     get shipContext(){ return this.context.ship };
 
     get enemyContext(){ return this.context.enemy };
+
+    get gateContext(){ return this.context.gates };
 
     get viewbox() {
         let offX = this.elmLeft;

@@ -1,4 +1,4 @@
-import { degreeToRad, radToDegree, SubscriptionHandler, wrapAngle, type IOptions, type ILocation, CollisionCheck } from "../shared";
+import { degreeToRad, radToDegree, SubscriptionHandler, wrapAngle, type IOptions, type ILocation, CollisionCheck, uuid } from "../shared";
 
 export interface IEnemy {
     x: number;
@@ -8,7 +8,7 @@ export interface IEnemy {
 
 export class Enemy extends SubscriptionHandler  implements IEnemy {
 
-    id = Math.random();
+    id = uuid();
 
     public x = 0;
     public y = 0;

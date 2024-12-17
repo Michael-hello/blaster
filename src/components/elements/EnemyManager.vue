@@ -13,7 +13,7 @@
 <script lang="ts">
 
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { IOptions } from '../../framework';
+import { EnemyManager, IOptions } from '../../framework';
 import EnemyShip from './Enemy.vue';
 
 @Component({
@@ -21,7 +21,7 @@ import EnemyShip from './Enemy.vue';
     EnemyShip
   }
 })
-export default class EnemyManager extends Vue {
+export default class EnemyManagerView extends Vue {
 
     @Prop({ required: true }) context: EnemyManager;
     @Prop({ required: true }) options: IOptions;
