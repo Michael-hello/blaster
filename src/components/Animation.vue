@@ -14,7 +14,10 @@
         :options="options"
       />
 
-      <enemy-view v-for="enemy in enemies" :key="enemy.id" :enemy=enemy />
+      <enemy-manager 
+        :context=enemyContext
+        :options="options"
+      />
 
     </svg>
   </div>
@@ -47,7 +50,7 @@ export default class Animation extends Vue {
 
     get shipContext(){ return this.context.ship };
 
-    get enemies(){ return this.context.enemy.enemies };
+    get enemyContext(){ return this.context.enemy };
 
     get viewbox() {
         let offX = this.elmLeft;
