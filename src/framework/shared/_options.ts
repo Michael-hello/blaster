@@ -19,8 +19,7 @@ export interface IOptions {
     shipSize: number; //in pixels
     shipReloadRate: number; //in ms
 
-    //between 1 and 10. 10 being hardest. Effects things like spawn cycle length
-    difficulty: number; 
+    difficulty: number; //between 1 and 10. 10 being hardest. Effects things like spawn cycle length
 };
 
 
@@ -30,9 +29,9 @@ export class OptionsService {
     getOptions() : IOptions {
         return {
             spawnRateGate: 2,
-            rotationSpeed: 5,
+            rotationSpeed: 1,
             explosionRadius: 50,
-            gateLength: 75,
+            gateLength: 200,
             spawnRateEnemy: 4,
             rateIncreasePower: 3,
             enemySpeed: 4,

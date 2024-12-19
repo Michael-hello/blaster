@@ -1,10 +1,15 @@
 <template>
     <g>
-        <gate-view
-            v-for="gate in gates" 
-            :key="gate.id" 
-            :gate=gate 
-        />
+      <g v-for="gate in gates" :key="gate.id" 
+        :transform="`rotate(${gate.rotation})`"
+        class="rotate">
+          <gate-view            
+              :gate=gate 
+              :height=elmHeight
+              :x="gate.x - (elmHeight / 2)" 
+              :y="gate.y - (elmHeight / 2)"
+          />
+      </g>
     </g>
 
 </template>
@@ -14,7 +19,7 @@
 
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { IOptions } from '../../framework';
-import { GateManager } from "../../framework/gates";
+import { Gate, GateManager } from "../../framework/gates";
 import GateView from './Gate.vue';
 
 @Component({
@@ -29,10 +34,16 @@ export default class GateManagerView extends Vue {
 
     get gates(){ return this.context.gates };  
 
+    get gateLength(){ return this.options.gateLength };
+
+    elmHeight = 1000;
 }
 
 </script>
 
 <style scoped>
-
+.rotate {
+  transform-box: fill-box;
+  transform-origin: center;
+}
 </style>

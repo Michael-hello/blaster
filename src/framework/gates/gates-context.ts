@@ -53,10 +53,12 @@ export class GateManager extends BaseContext {
     }
 
      private startSpawning(){
-        this.addGates(1)
-        // let interval = setInterval(() => { 
-        //     this.addGates(this.spawnRate);
-        //  }, 3000 );
+        this.addGates(1);
+        return;
+        
+        let interval = setInterval(() => { 
+            this.addGates(1);
+         }, 2000 );
 
          let sub1 = this.events.pipe(
             filter(x => x.topic == ShipMoveEvent)
@@ -64,7 +66,7 @@ export class GateManager extends BaseContext {
             
         });
 
-        // this.intervals.push(interval);
+        this.intervals.push(interval);
         this.subscriptions.push(sub1);
     };
 
@@ -90,6 +92,7 @@ export class GateManager extends BaseContext {
                 this.options, 
                 location
             );
+            console.log(location)
             this.gates.push(gate);
         };
     };
