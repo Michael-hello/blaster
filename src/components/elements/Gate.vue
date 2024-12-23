@@ -53,7 +53,7 @@ export default class GateView extends Vue {
         let colour = "rgb(255,255,255)";
         return `fill:${colour}; stroke-width: 3; stroke:${colour};`;
     };
-    get columnWidth(){ return 8 };
+    get columnWidth(){ return this.gate.columnHeight };
 
     get columns(){ 
         let mid = this.height / 2;

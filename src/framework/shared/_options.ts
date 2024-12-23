@@ -7,6 +7,7 @@ export interface IOptions {
     rotationSpeed: number; //rotation in degrees per second
     explosionRadius: number; //in pixels
     gateLength: number; //in pixels
+    gateColumnHeight: number;
 
     /** enemy options */
     spawnRateEnemy: number; //number of enemies to spawn each cycle
@@ -32,6 +33,7 @@ export class OptionsService {
             rotationSpeed: 1,
             explosionRadius: 50,
             gateLength: 200,
+            gateColumnHeight: 8,
             spawnRateEnemy: 4,
             rateIncreasePower: 3,
             enemySpeed: 4,

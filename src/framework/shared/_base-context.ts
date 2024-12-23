@@ -7,7 +7,11 @@ export abstract class SubscriptionHandler {
     public subscriptions: SubscriptionLike[] = [];
     public intervals: NodeJS.Timer[] = [];
 
-    constructor(){}    
+    get disposed(){ return this._disposed };
+
+    constructor(){}  
+    
+    private _disposed = false;
 
     dispose(){
         if(this.subscriptions != null){
@@ -19,7 +23,9 @@ export abstract class SubscriptionHandler {
             for(let int of this.intervals)
                 clearInterval(int)
         };
-    }
+
+        this._disposed = true;
+    };
 };
 
 

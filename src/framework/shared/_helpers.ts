@@ -35,3 +35,7 @@ export function uuid() {
     };
     return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
 }
+
+export function cloneObject(x: Object) {
+    return JSON.parse(JSON.stringify(x));
+};

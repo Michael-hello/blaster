@@ -18,7 +18,7 @@ export class Enemy extends SubscriptionHandler  implements IEnemy {
     private previousTrajectories: number[] = [];
         
     constructor(     
-        private collisionDetected: () => void,
+        private collisionDetected: (x: ILocation) => void,
         private getShipLocation: () => ILocation,
         private options: IOptions
     ){
@@ -32,7 +32,7 @@ export class Enemy extends SubscriptionHandler  implements IEnemy {
         let opts = this.options;
         let ship = this.getShipLocation();
         let collided = CollisionCheck(ship, position, opts.shipSize / 2, opts.enemySize / 2);
-        if(collided) this.collisionDetected();
+        if(collided) this.collisionDetected(position);
     };
 
     private updateTrajectory(traj: number){
@@ -49,9 +49,9 @@ export class Enemy extends SubscriptionHandler  implements IEnemy {
         let cycleLength = 100 / this.options.difficulty;
         let interval = setInterval(() => { 
             this.moveTowardsShip();
-         }, cycleLength );
+        }, cycleLength );
 
-         this.intervals.push(interval);
+        this.intervals.push(interval);
     };
 
 

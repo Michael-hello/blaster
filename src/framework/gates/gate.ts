@@ -2,11 +2,9 @@ import { type IOptions, type ILocation, SubscriptionHandler, uuid, wrapAngle, de
 
 export class Gate extends SubscriptionHandler implements IGate {
 
-    id = uuid();
+    readonly id = uuid();
 
     constructor(
-        private getShipLocation: () => ILocation,
-        private collisionDetected: () => void,
         public options: IOptions,
         location: ILocation) 
     {
@@ -19,6 +17,11 @@ export class Gate extends SubscriptionHandler implements IGate {
 
         this.updateLength(length);
         this.startMovement();
+
+        this.x = 280;
+        this.y = 150;
+        this.updateLength(150);
+        this.rotation = 180;
     };
 
     public x = 0;
@@ -26,8 +29,11 @@ export class Gate extends SubscriptionHandler implements IGate {
     public rotation = Math.random() * 360;
     public length = 0;
     public increment = 0; //length change increment
+    private _alive = true;
 
+    get alive(){ return this._alive };
     get rotationSpeed() { return this.options.rotationSpeed };
+    get columnHeight(){ return this.options.gateColumnHeight };
 
     /** locations of column 1 and 2 */
     get position1() {
@@ -41,6 +47,11 @@ export class Gate extends SubscriptionHandler implements IGate {
         let x = r * Math.cos(degreeToRad(this.rotation)); 
         let y = r * Math.sin(degreeToRad(this.rotation));
         return { x:  this.x - x , y: this.y - y }; 
+    };
+
+    killGate() {
+        this._alive = false;
+        this.dispose();
     };
 
     startMovement() {
@@ -71,7 +82,16 @@ export class Gate extends SubscriptionHandler implements IGate {
 
 
 export interface IGate extends ILocation {
-    id: string;
+
+    readonly alive: boolean;
+    readonly id: string;
+
     length: number; //length in pixels
     rotation: number; //in degrees
+
+    /** locations of column 1 and 2 */
+    position1: ILocation;
+    position2: ILocation;
+
+    killGate: () => void;
 };

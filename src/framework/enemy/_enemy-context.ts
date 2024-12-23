@@ -1,5 +1,5 @@
 import { filter, type Subject } from "rxjs";
-import { type ILocation, ShipEnemyCollision, BaseContext, ShipMoveEvent, isShipMoveEvent, type Event, type IOptions, type IPageState } from "..";
+import { type EnemyCollisionEvent, type ILocation, ShipEnemyCollision, BaseContext, ShipMoveEvent, isShipMoveEvent, type Event, type IOptions, type IPageState } from "..";
 import { Enemy, type IEnemy } from "./_enemy";
 import type { IEnemyCtxState } from "./_enemy-builder";
 
@@ -61,7 +61,7 @@ export class EnemyManager extends BaseContext {
     }
 
      private startSpawning(){
-        this.addEnemies(1)
+        // this.addEnemies(1);
         // let interval = setInterval(() => { 
         //     this.addEnemies(this.spawnRate);
         //  }, 3000 );
@@ -76,10 +76,13 @@ export class EnemyManager extends BaseContext {
         this.subscriptions.push(sub1);
     };
 
-    addEnemies(count: number){
+    private addEnemies(count: number){
 
         const getShipLocation = () => this.shipLocation;
-        const collisionDetected = () => this.events.next({ topic: ShipEnemyCollision });
+        const collisionDetected = (loc: ILocation) => {
+            let event: EnemyCollisionEvent = { topic: ShipEnemyCollision, ...loc }
+            this.events.next(event);
+        };
 
         for(let i = 0; i < count; i++){
             let enemy = new Enemy(collisionDetected, getShipLocation, this.options);

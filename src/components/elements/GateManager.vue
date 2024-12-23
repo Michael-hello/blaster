@@ -3,7 +3,9 @@
       <g v-for="gate in gates" :key="gate.id" 
         :transform="`rotate(${gate.rotation})`"
         class="rotate">
-          <gate-view            
+
+          <gate-view  
+              v-if="gate.alive"          
               :gate=gate 
               :height=elmHeight
               :x="gate.x - (elmHeight / 2)" 
