@@ -1,5 +1,5 @@
 import { filter, type Subject } from "rxjs";
-import { type EnemyCollisionEvent, type ILocation, ShipEnemyCollision, BaseContext, ShipMoveEvent, isShipMoveEvent, type Event, type IOptions, type IPageState } from "..";
+import { EnemyDeath, type EnermyDeathEvent, CollisionCheck, type GateSmashEvent, ShipGateSmashEvent, type EnemyCollisionEvent, type ILocation, ShipEnemyCollision, BaseContext, ShipMoveEvent, isShipMoveEvent, type Event, type IOptions, type IPageState } from "..";
 import { Enemy, type IEnemy } from "./_enemy";
 import type { IEnemyCtxState } from "./_enemy-builder";
 
@@ -17,6 +17,7 @@ export class EnemyManager extends BaseContext {
     get spawnRate() { return this.options.spawnRateEnemy };
     get rateIncreasePower() { return this.options.rateIncreasePower };
     get enemySpeed() { return this.options.enemySpeed };
+    get enemySize() { return this.options.enemySize };
 
     shipLocation: ILocation = { x: 0, y: 0 };
 
@@ -61,22 +62,28 @@ export class EnemyManager extends BaseContext {
     }
 
      private startSpawning(){
-        // this.addEnemies(1);
-        // let interval = setInterval(() => { 
-        //     this.addEnemies(this.spawnRate);
-        //  }, 3000 );
+        
+        this.addEnemies(1000, 250);
 
          let sub1 = this.events.pipe(
             filter(x => x.topic == ShipMoveEvent)
         ).subscribe(x => {
-            
+            this.shipLocation.x = (x as ShipMoveEvent).x;
+            this.shipLocation.y = (x as ShipMoveEvent).y;
         });
 
-        // this.intervals.push(interval);
-        this.subscriptions.push(sub1);
+        let sub2 = this.events.pipe(
+            filter(x => x.topic == ShipGateSmashEvent)
+        ).subscribe(x => {
+            this.killEnemies(x as GateSmashEvent);
+        });
+
+        this.subscriptions.push(...[ sub1, sub2 ]);
     };
 
-    private addEnemies(count: number){
+    private addEnemies(count: number, delay: number){
+
+        if(count == 0) return;
 
         const getShipLocation = () => this.shipLocation;
         const collisionDetected = (loc: ILocation) => {
@@ -84,22 +91,36 @@ export class EnemyManager extends BaseContext {
             this.events.next(event);
         };
 
-        for(let i = 0; i < count; i++){
-            let enemy = new Enemy(collisionDetected, getShipLocation, this.options);
-            this.enemies.push(enemy);
-            let index = i % 4;
-            let start = this.startPos[index] as [ number, number ];
+        let enemy = new Enemy(collisionDetected, getShipLocation, this.options);
+        this.enemies.push(enemy);
+        let index = count % 4;
+        let start = this.startPos[index] as [ number, number ];
 
-            // index = 2;   
+        // 0 == top   // 1 == right   // 2 == bottom   // 3 == left
+        let scalar = 2 * Math.random();
+        if(index == 0 || index == 2) start[0] = start[0] * scalar;
+        else start[1] = start[1] * scalar;
 
-            if(index == 1) start[0] -= 2 * this.options.enemySize;
-            if(index == 2) start[1] -= 2 * this.options.enemySize;
+        enemy.updatePosition({ x: start[0], y: start[1] });
+        enemy.startHunting(); 
 
-            // start = [300, 350]        
-            enemy.updatePosition({ x: start[0], y: start[1] });
-            enemy.startHunting();            
-            console.log('ADDING ENEMY', count, enemy, index, start)
-        }
+        setTimeout(() => this.addEnemies(count - 1, delay), delay);      
+        
+    };
+
+    private killEnemies(event: GateSmashEvent) {
+        
+        let gate = event.gate;
+        let radius = gate.length * 0.75;
+
+        for(let enemy of this.enemies) {
+            if(CollisionCheck(gate, enemy, this.enemySize, radius)) {
+                enemy.alive = false;
+                let event: EnermyDeathEvent = { topic: EnemyDeath, x: enemy.x, y: enemy.y }
+                this.events.next(event);
+            };
+        };
+
     };
 
 }

@@ -1,3 +1,4 @@
+import type { IGate } from "../gates";
 import type { ILocation } from "./_page-state";
 
 
@@ -14,6 +15,9 @@ export const ShipGateSmashEvent = "topic:ship:gate:smash";
 
 export const ShipEnemyCollision = "topic:enemy:collision";
 export const ShipGateCollision = "topic:gate:collision";
+export const EnemyDeath = "topic:enemy:death";
+
+
 
 export interface UserEvent extends Event {
     key: string   
@@ -21,7 +25,12 @@ export interface UserEvent extends Event {
 export interface ShipMoveEvent extends Event, ILocation { };
 export interface EnemyCollisionEvent extends Event, ILocation { }; //ship death
 export interface GateCollisionEvent extends Event, ILocation { }; //ship death 
-export interface GateSmashEvent extends Event, ILocation { }; //gate explosion - enemy death
+export interface GateSmashEvent extends Event, ILocation { //gate explosion - enemy death
+    gate: IGate;
+}; 
+export interface EnermyDeathEvent extends Event, ILocation { };
+
+
 
 export function isUserEvent(event: Event): event is UserEvent {
     return event.topic == KeyPressDown || event.topic == KeyPressUp;

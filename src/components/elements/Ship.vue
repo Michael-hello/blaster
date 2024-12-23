@@ -5,7 +5,7 @@
         :height="size" 
         :x=shipX 
         :y=shipY 
-        style="fill:rgb(13,56,255); stroke-width:3; stroke:rgb(13,56,255)" 
+        style="fill:rgb(255,56,43); stroke-width:3; stroke:rgb(255,56,43)" 
     />
 
 </template>

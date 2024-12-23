@@ -3,15 +3,18 @@ import { degreeToRad, radToDegree, SubscriptionHandler, wrapAngle, type IOptions
 export interface IEnemy {
     x: number;
     y: number;
+    alive: boolean;
 }
 
 
-export class Enemy extends SubscriptionHandler  implements IEnemy {
+export class Enemy extends SubscriptionHandler implements IEnemy {
 
     id = uuid();
 
     public x = 0;
     public y = 0;
+
+    alive = true;
 
     /** trajectory always in degrees */
     private currentTrajectory = 0;    
@@ -48,7 +51,10 @@ export class Enemy extends SubscriptionHandler  implements IEnemy {
 
         let cycleLength = 100 / this.options.difficulty;
         let interval = setInterval(() => { 
-            this.moveTowardsShip();
+            if(this.alive)
+                this.moveTowardsShip();
+            else
+                this.dispose();
         }, cycleLength );
 
         this.intervals.push(interval);

@@ -82,17 +82,19 @@ export class GateManager extends BaseContext {
         let A = cloneObject(this.previousShip);
         let B = cloneObject(shipNew);
 
-        console.log(A, B)
-
         /** checks for intersection (crash) between segments AB (ship travel path)
             and gate length CD **/
         for(let gate of this.filtered) {
             let C = gate.position1;
             let D = gate.position2;
             if( intersect(A, B, C, D) ) {
-                let event: GateSmashEvent = { topic: ShipGateSmashEvent, x: gate.x, y: gate.y };
+                let event: GateSmashEvent = { 
+                    topic: ShipGateSmashEvent, 
+                    x: gate.x, 
+                    y: gate.y,
+                    gate
+                };
                 this.events.next(event);
-                console.log('GATE SMASH')
             };
         };        
     };
@@ -139,7 +141,12 @@ export class GateManager extends BaseContext {
             for(let point of points) {
                 if(CollisionCheck(ship, point, opts.shipSize, 1)) {
                     gate.killGate();
-                    let event: GateSmashEvent = { topic: ShipGateSmashEvent, x: gate.x, y: gate.y };
+                    let event: GateSmashEvent = { 
+                        topic: ShipGateSmashEvent, 
+                        x: gate.x, 
+                        y: gate.y,
+                        gate
+                    };
                     this.events.next(event);
                     return;
                 };
@@ -149,13 +156,12 @@ export class GateManager extends BaseContext {
 
 
      private startSpawning(){
-        this.addGates(2);
-        return;
+        this.addGates(4);
 
         let interval = setInterval(() => { 
             this.addGates(1);
             this.removeGates();
-         }, 2000 );
+         }, 1000 );
 
          let sub1 = this.events.pipe(
             filter(x => x.topic == ShipMoveEvent)

@@ -18,10 +18,8 @@ export class Gate extends SubscriptionHandler implements IGate {
         this.updateLength(length);
         this.startMovement();
 
-        // this.x = 280;
-        // this.y = 150;
-        this.updateLength(150);
-        this.rotation = 180;
+        // this.updateLength(150);
+        // this.rotation = 180;
     };
 
     public x = 0;
@@ -59,8 +57,8 @@ export class Gate extends SubscriptionHandler implements IGate {
         let interval = setInterval(() => { 
             if(this.length >= 0.9 * this.options.gateLength) this.increment *= -1; 
             if(this.length <= 0.5 * this.options.gateLength) this.increment *= -1; 
-            // this.updateLength(this.length + this.increment);
-            // this.updateRotation(this.rotation + this.rotationSpeed);
+            this.updateLength(this.length + this.increment);
+            this.updateRotation(this.rotation + this.rotationSpeed);
         }, 60 );
 
         this.intervals.push(interval);

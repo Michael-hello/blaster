@@ -36,7 +36,7 @@ export class OptionsService {
             gateColumnHeight: 8,
             spawnRateEnemy: 4,
             rateIncreasePower: 3,
-            enemySpeed: 4,
+            enemySpeed: 8,
             enemySize: 10,
             shipSpeed: 12,
             shipSize: 10,
