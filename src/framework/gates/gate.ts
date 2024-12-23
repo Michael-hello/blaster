@@ -18,8 +18,8 @@ export class Gate extends SubscriptionHandler implements IGate {
         this.updateLength(length);
         this.startMovement();
 
-        this.x = 280;
-        this.y = 150;
+        // this.x = 280;
+        // this.y = 150;
         this.updateLength(150);
         this.rotation = 180;
     };

@@ -18,6 +18,7 @@ export class ShipContext extends BaseContext {
     get y(){ return this.state.location.y }
 
     keyDown: { [key: string]: boolean } = { 'w': false, 'a': false, 's': false, 'd': false };
+    moving = false;
 
     constructor(
         private state: IShipState,
@@ -61,6 +62,7 @@ export class ShipContext extends BaseContext {
         if(invalid) return;
 
         this.keyDown[key] = direction == 'down' ? true : false;
+        this.moving = direction == 'down';
     };
 
     updateLocation(position: { x?: number, y?: number} ){
@@ -70,6 +72,8 @@ export class ShipContext extends BaseContext {
     };
 
     move(){
+        // if(!this.moving) return;
+
         let move = this.options.shipSpeed / this.options.difficulty;
         let size = this.options.shipSize / 2;
 

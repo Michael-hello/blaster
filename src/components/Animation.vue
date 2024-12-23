@@ -24,6 +24,10 @@
         :options="options"
       />
 
+      <effects 
+        :events=events
+      />
+
     </svg>
   </div>
 </template>
@@ -36,12 +40,14 @@ import { MainContext, KeyPressDown, KeyPressUp, keys, Enemy, IOptions, altKeys }
 import Ship from './elements/Ship.vue';
 import EnemyManager from './elements/EnemyManager.vue';
 import GateManager from './elements/GateManager.vue';
+import Effects from "./elements/Effects.vue";
 
 @Component({
   components: {
     Ship,
     EnemyManager,
-    GateManager
+    GateManager,
+    Effects
   }
 })
 export default class Animation extends Vue {
@@ -60,6 +66,8 @@ export default class Animation extends Vue {
     get enemyContext(){ return this.context.enemy };
 
     get gateContext(){ return this.context.gates };
+
+    get events(){ return this.context.events };
 
     get viewbox() {
         let offX = this.elmLeft;

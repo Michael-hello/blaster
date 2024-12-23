@@ -16,6 +16,7 @@ export class GateManager extends BaseContext {
 
     get spawnRate() { return this.options.spawnRateGate };
     get rotationSpeed() { return this.options.rotationSpeed };
+    get filtered(){ return this.gates.filter(x => x.alive) };
 
     shipLocation: ILocation = { x: 0, y: 0 };
     previousShip: ILocation = { x: 0, y: 0 };
@@ -37,7 +38,8 @@ export class GateManager extends BaseContext {
             throw Error('Already initialised');
 
         this.events = events;
-        this.updateShipLocation(ship);
+        this.updateShipLocation(ship, false);
+        this.updateShipLocation(ship, false);
 
         let sub1 = this.events.pipe(
         ).subscribe((event) => {
@@ -57,8 +59,8 @@ export class GateManager extends BaseContext {
         this.startSpawning();
     };
 
-    private updateShipLocation(ship: ILocation) {
-        this.gateCollisionCheck(ship);
+    private updateShipLocation(ship: ILocation, check = true) {
+        if(check) this.gateCollisionCheck(ship);
 
         this.previousShip = cloneObject(this.shipLocation)
         this.shipLocation.x = ship.x;
@@ -77,12 +79,14 @@ export class GateManager extends BaseContext {
             return ccw(A,C,D) != ccw(B,C,D) && ccw(A,B,C) != ccw(A,B,D)
         };
 
-        const A = cloneObject(this.previousShip);
-        const B = cloneObject(shipNew);
+        let A = cloneObject(this.previousShip);
+        let B = cloneObject(shipNew);
+
+        console.log(A, B)
 
         /** checks for intersection (crash) between segments AB (ship travel path)
             and gate length CD **/
-        for(let gate of this.gates) {
+        for(let gate of this.filtered) {
             let C = gate.position1;
             let D = gate.position2;
             if( intersect(A, B, C, D) ) {
@@ -99,7 +103,7 @@ export class GateManager extends BaseContext {
         let opts = this.options;
         let ship = JSON.parse(JSON.stringify(this.shipLocation));
 
-        for(let gate of this.gates) {
+        for(let gate of this.filtered) {
 
             //Check if gate is near ship
             let diameter = gate.length * 1.2;
@@ -145,11 +149,12 @@ export class GateManager extends BaseContext {
 
 
      private startSpawning(){
-        this.addGates(1);
+        this.addGates(2);
         return;
 
         let interval = setInterval(() => { 
             this.addGates(1);
+            this.removeGates();
          }, 2000 );
 
          let sub1 = this.events.pipe(
@@ -181,6 +186,15 @@ export class GateManager extends BaseContext {
             );
             console.log(location)
             this.gates.push(gate);
+        };
+    };
+
+    private removeGates() {
+        for(let gate of this.gates) {
+            if(!gate.alive) {
+                let index = this.gates.findIndex(x => x.id == gate.id);
+                this.gates.splice(index, 1);
+            }
         };
     };
 

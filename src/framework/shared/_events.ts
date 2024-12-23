@@ -29,8 +29,11 @@ export function isUserEvent(event: Event): event is UserEvent {
 export function isShipMoveEvent(event: Event): event is ShipMoveEvent {
     return event.topic == ShipMoveEvent;
 };
-export function isGameOverEvent(event: EnemyCollisionEvent | GateCollisionEvent) {
+export function isGameOverEvent(event: Event) {
     return event.topic == ShipEnemyCollision || event.topic == ShipGateCollision;
+};
+export function isGateSmashEvent(event: Event): event is GateSmashEvent {
+    return event.topic == ShipGateSmashEvent;
 };
 
 

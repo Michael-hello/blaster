@@ -13,13 +13,15 @@ export class MainContext extends BaseContext {
     public enemy: EnemyManager = null as any;
     public gates: GateManager = null as any;
 
+    private _initialised = false;
+
     public page: IPageState = { 
         width: 0,
         height: 0
     };
 
     get initialised(){ 
-        return this.ship != null && this.enemy != null;
+        return this._initialised && this.ship != null && this.enemy != null;
     };
 
     constructor(
@@ -46,14 +48,17 @@ export class MainContext extends BaseContext {
         this.ship = this.shipBuilder.build();
         this.enemy = this.enemyBuilder.build();
         this.gates = this.gateBuilder.build();
-
         let ship = { x: this.ship.x, y: this.ship.y };
+
+        if(width != null && height != null) {
+            this.updateDiemnsions(width, height);
+            ship = { x: width / 2, y: height / 2 };
+        };
+
         this.ship.initialise(this.events, this.page);
         this.enemy.initialise(this.events, this.page, ship);
         this.gates.initialise(this.events, this.page, ship);
-
-        if(width != null && height != null)
-            this.updateDiemnsions(width, height);
+        this._initialised = true;
     };
 
     updateDiemnsions(width: number, height: number){

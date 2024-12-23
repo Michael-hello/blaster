@@ -7,3 +7,4 @@ export * from './_options';
 export * from './_base-context';
 export * from './_helpers';
 export * from './_collisions';
+export * from './_explosion';
