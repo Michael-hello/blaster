@@ -19,6 +19,7 @@ export interface IOptions {
     shipSpeed: number; //amount moved in pixels per cycle step
     shipSize: number; //in pixels
     shipReloadRate: number; //in ms
+    shipLives: number; //number of initial lives the ship has
 
     difficulty: number; //between 1 and 10. 10 being hardest. Effects things like spawn cycle length
 };
@@ -41,6 +42,7 @@ export class OptionsService {
             shipSpeed: 12,
             shipSize: 10,
             shipReloadRate: 30,
+            shipLives: 3,
             difficulty: 2
         }
     };

@@ -2,13 +2,14 @@
   <div id="main-container">
 
     <Animation 
-      v-if="loaded && alive"
+      v-if="loaded && isAlive"
       :context="context"
       :options="options"
     />
 
-    <div v-if="!alive" id=game-over>
+    <div v-if="!isAlive" id=game-over>
       <span id=go-text>GAME OVER</span>
+      <button @click="newGame" id="newGame">New Game</button>
     </div>
 
   </div>
@@ -19,7 +20,7 @@
 
 import { Component, Vue, Prop } from "vue-property-decorator";
 import Animation from './Animation.vue';
-import { BaseContext, EnemyBuilder, IOptions, isGameOverEvent, MainContext, OptionsService, ShipBuilder, SubscriptionHandler } from '../framework';
+import { BaseContext, EnemyBuilder, IOptions, MainContext, OptionsService, ShipBuilder, ShipLifeChange, ShipLifeChangeEvent, SubscriptionHandler } from '../framework';
 import {  filter } from "rxjs/operators";
 import { GateBuilder } from "../framework/gates";
 
@@ -38,8 +39,9 @@ export default class Container extends Vue {
   context: MainContext = null;
   options: IOptions = null;
   loaded = false;
-  alive = true;
   handler: SubscriptionHandler = new BaseContext();
+  isAlive = true;
+  shipLives = 0;
 
   async created(){
     let optionsService = new OptionsService();
@@ -52,15 +54,21 @@ export default class Container extends Vue {
     this.loaded = true;
 
     let sub1 = this.context.events.pipe(
-        filter(x => isGameOverEvent(x))
+        filter(x => x.topic == ShipLifeChange)
     ).subscribe((x) => {
-        this.alive = false;
+      this.shipLives = Number((x as ShipLifeChangeEvent).remainingLives);
+      this.isAlive = this.shipLives > 0;
     });
 
     this.handler.subscriptions.push(sub1);
 
     //TO DO: allow user to edit IOptions
   };
+  
+  newGame() {
+    if(this.context == null) return;
+    this.context.newGame();
+  }
 
   beforeDestroy() {
     if(this.handler) {

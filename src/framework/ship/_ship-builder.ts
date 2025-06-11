@@ -9,15 +9,14 @@ export class ShipBuilder implements IBuilder<ShipContext, IShipState> {
 
     build(): ShipContext {
 
+        let options = this.optionsService.getOptions();
         let state: IShipState = {
             location: {
                 x: 0,
                 y: 0
             },
-            lives: 3
+            lives: options.shipLives
         };
-
-        let options = this.optionsService.getOptions();
 
         return new ShipContext(state, options);
     };

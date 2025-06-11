@@ -12,6 +12,7 @@ export const KeyPressUp = 'topic:key:up';
 
 export const ShipMoveEvent = "topic:ship:move";
 export const ShipGateSmashEvent = "topic:ship:gate:smash";
+export const ShipLifeChange = "topic:ship:life:change";
 
 export const ShipEnemyCollision = "topic:enemy:collision";
 export const ShipGateCollision = "topic:gate:collision";
@@ -23,8 +24,12 @@ export interface UserEvent extends Event {
     key: string   
 };
 export interface ShipMoveEvent extends Event, ILocation { };
-export interface EnemyCollisionEvent extends Event, ILocation { }; //ship death
-export interface GateCollisionEvent extends Event, ILocation { }; //ship death 
+export interface ShipLifeChangeEvent extends Event { 
+    remainingLives: number
+};
+export interface EnemyCollisionEvent extends Event, ILocation { }; //ship life lost
+export interface GateCollisionEvent extends Event, ILocation { }; //ship life lost 
+export interface CollisionEvent extends Event, ILocation { }; //filter 
 export interface GateSmashEvent extends Event, ILocation { //gate explosion - enemy death
     gate: IGate;
 }; 
@@ -38,20 +43,20 @@ export function isUserEvent(event: Event): event is UserEvent {
 export function isShipMoveEvent(event: Event): event is ShipMoveEvent {
     return event.topic == ShipMoveEvent;
 };
-export function isGameOverEvent(event: Event) {
-    return event.topic == ShipEnemyCollision || event.topic == ShipGateCollision;
-};
 export function isGateSmashEvent(event: Event): event is GateSmashEvent {
     return event.topic == ShipGateSmashEvent;
 };
+export function isCollisionEvent(event: Event): event is CollisionEvent {
+    return event.topic == ShipEnemyCollision || event.topic == ShipGateCollision
+}
 
 
 /**
  *  types of events:
  * 
- *      - gate collision - ship death
+ *      - gate collision - ship life lost
  *      - gate collision - enemy death : explosion_radius
- *      - enemy collison - ship death
+ *      - enemy collison - ship life lost
  * 
  *      - gate spawn
  *      - enemy spawn

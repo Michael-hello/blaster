@@ -1,5 +1,5 @@
 import type { Subject } from "rxjs";
-import { Enemy, type Event, KeyPressDown, KeyPressUp, cloneObject,  isUserEvent, type UserEvent, type IPageState, type IOptions, keys, ShipMoveEvent, type ILocation } from "..";
+import { ShipLifeChange, isCollisionEvent, Enemy, type Event, KeyPressDown, KeyPressUp, cloneObject,  isUserEvent, type UserEvent, type IPageState, type IOptions, keys, ShipMoveEvent, type ILocation } from "..";
 import {  filter } from "rxjs/operators";
 import { BaseContext } from "../index";
 
@@ -20,12 +20,13 @@ export class ShipContext extends BaseContext {
     keyDown: { [key: string]: boolean } = { 'w': false, 'a': false, 's': false, 'd': false };
     moving = false;
     direction = 0;     /** direction ship is facing in degrees */
+    currentLives = Number.MAX_VALUE;
 
     constructor(
         private state: IShipState,
         private options: IOptions
     ){
-        super();       
+        super();  
     };
 
     updatePageState(state: IPageState){
@@ -40,6 +41,7 @@ export class ShipContext extends BaseContext {
         let y = this.page.height / 2;
         let x = this.page.width / 2;
         this.updateLocation({ x , y });
+        this.updateLives(this.state.lives);
 
         let sub1 = this.events.pipe(
             filter(x => isUserEvent(x))
@@ -48,7 +50,13 @@ export class ShipContext extends BaseContext {
             if(x.topic == KeyPressUp) this.processKey(x as UserEvent, 'up');
         });
 
-        this.subscriptions.push(sub1);
+        let sub2 = this.events.pipe(
+            filter(x => isCollisionEvent(x))
+        ).subscribe((x) => {
+            this.updateLives(this.currentLives - 1);
+        });
+
+        this.subscriptions.push(...[ sub1, sub2 ]);
         this.intervals.push(setInterval(() => this.move(), this.options.shipReloadRate));
     };
 
@@ -76,6 +84,11 @@ export class ShipContext extends BaseContext {
         if(y == null) position.y = original.y;
 
         this.direction = Enemy.trajectoryAtoB(original, position as ILocation);
+    };
+
+    updateLives(count: number) {
+        this.currentLives = count;    
+        this.events.next({ topic: ShipLifeChange, remainingLives: this.currentLives });
     };
 
     move(){
