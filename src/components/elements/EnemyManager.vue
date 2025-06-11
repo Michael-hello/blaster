@@ -1,10 +1,19 @@
 <template>
     <g>
-        <enemy-ship 
+        <enemy-symbols />
+        <use 
+            v-for="enemy in enemies" 
+            :key="enemy.id" 
+            :x=enemy.x
+            :y=enemy.y
+            href="#enemy-icon-very-small"
+        />
+
+        <!-- <enemy-ship 
             v-for="enemy in enemies" 
             :key="enemy.id" 
             :enemy=enemy 
-        />
+        /> -->
     </g>
 
 </template>
@@ -14,11 +23,11 @@
 
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { EnemyManager, IOptions } from '../../framework';
-import EnemyShip from './Enemy.vue';
+import EnemySymbols from './Enemy.vue';
 
 @Component({
   components: {
-    EnemyShip
+    EnemySymbols
   }
 })
 export default class EnemyManagerView extends Vue {

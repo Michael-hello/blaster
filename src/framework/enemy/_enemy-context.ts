@@ -63,7 +63,7 @@ export class EnemyManager extends BaseContext {
 
      private startSpawning(){
         
-        this.addEnemies(1000, 250);
+        this.addEnemies(1000, 500);
 
          let sub1 = this.events.pipe(
             filter(x => x.topic == ShipMoveEvent)

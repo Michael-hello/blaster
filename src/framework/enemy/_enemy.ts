@@ -64,8 +64,13 @@ export class Enemy extends SubscriptionHandler implements IEnemy {
     /** returns angle in degrees */
     private trajToShip(){
         let ship = this.getShipLocation();
-        let dx = ship.x - this.x;
-        let dy = -(ship.y - this.y);
+        let current: ILocation = { x: this.x, y: this.y };
+        return Enemy.trajectoryAtoB(current, ship);
+    };
+
+    static trajectoryAtoB(A: ILocation, B: ILocation) {
+        let dx = B.x - A.x;
+        let dy = -(B.y - A.y);
         let theta3 = radToDegree(Math.atan(dx/ dy));
 
         if(dx >= 0 && dy >= 0) theta3 = theta3;
@@ -73,7 +78,7 @@ export class Enemy extends SubscriptionHandler implements IEnemy {
         if(dx < 0 && dy < 0  ) theta3 = 180 + theta3;
         if(dx < 0 && dy >= 0 ) theta3 = theta3;
 
-        return (theta3);
+        return theta3;
     };
 
     private moveTowardsShip() {

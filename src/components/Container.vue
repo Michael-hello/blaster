@@ -81,7 +81,7 @@ export default class Container extends Vue {
   width: 100%;
 
   max-height: 1000px;
-  max-width: 560px;
+  max-width: 760px;
 
   background-color: black;
 

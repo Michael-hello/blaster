@@ -1,5 +1,5 @@
 import type { Subject } from "rxjs";
-import { type Event, KeyPressDown, KeyPressUp,  isUserEvent, type UserEvent, type IPageState, type IOptions, keys, ShipMoveEvent, type ILocation } from "..";
+import { Enemy, type Event, KeyPressDown, KeyPressUp, cloneObject,  isUserEvent, type UserEvent, type IPageState, type IOptions, keys, ShipMoveEvent, type ILocation } from "..";
 import {  filter } from "rxjs/operators";
 import { BaseContext } from "../index";
 
@@ -19,6 +19,7 @@ export class ShipContext extends BaseContext {
 
     keyDown: { [key: string]: boolean } = { 'w': false, 'a': false, 's': false, 'd': false };
     moving = false;
+    direction = 0;     /** direction ship is facing in degrees */
 
     constructor(
         private state: IShipState,
@@ -66,9 +67,15 @@ export class ShipContext extends BaseContext {
     };
 
     updateLocation(position: { x?: number, y?: number} ){
+        let original = cloneObject(this.state.location);
         let { x , y } = position;
         if(x) this.state.location.x = x;
         if(y) this.state.location.y = y;
+
+        if(x == null) position.x = original.x;
+        if(y == null) position.y = original.y;
+
+        this.direction = Enemy.trajectoryAtoB(original, position as ILocation);
     };
 
     move(){
