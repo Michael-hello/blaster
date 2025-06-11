@@ -46,7 +46,6 @@ export default class Effects extends Vue {
     };
 
     addExplosion(x: number, y: number, type: string, colour: string, size: number) {
-        console.log('EXPLOSION', type)
         let explosion: IExplosion = {
             type,
             x: x,

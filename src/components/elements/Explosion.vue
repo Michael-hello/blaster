@@ -84,10 +84,6 @@ export default class Explosion extends Vue {
 
     @Prop({ required: true }) explosion: IExplosion;
 
-    mounted() {
-        console.log('boom', this.palette)
-    };
-
     get colour(){ return this.explosion.colour }
 
     get palette() {

@@ -9,11 +9,6 @@
         xmlns="http://www.w3.org/2000/svg"
         version="1.2"
     >
-      <ship 
-        :context=shipContext 
-        :options="options"
-      />
-
       <enemy-manager 
         :context=enemyContext
         :options="options"
@@ -26,6 +21,11 @@
 
       <effects 
         :events=events
+      />
+
+      <ship 
+        :context=shipContext 
+        :options="options"
       />
 
     </svg>
@@ -96,6 +96,7 @@ export default class Animation extends Vue {
         this.observeHeight(cllBck);
 
         this.context.initialise(this.elmWidth, this.elmHeight);
+        this.$emit("ship", this.context.ship);
         this.loaded = true;
     };
 

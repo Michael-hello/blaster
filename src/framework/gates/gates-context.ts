@@ -190,7 +190,6 @@ export class GateManager extends BaseContext {
                 this.options, 
                 location
             );
-            console.log(location)
             this.gates.push(gate);
         };
     };

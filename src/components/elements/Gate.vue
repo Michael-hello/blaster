@@ -68,9 +68,6 @@ export default class GateView extends Vue {
         return `0 0 ${this.height} ${this.height}`;
     };
 
-    mounted() {
-        console.log('gate', this.length)
-    }
 
 }
 
