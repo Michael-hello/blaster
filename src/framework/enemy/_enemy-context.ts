@@ -41,6 +41,7 @@ export class EnemyManager extends BaseContext {
     };
 
     initialise(events: Subject<Event>, page: IPageState, ship: ILocation){
+
         if(this.initialised) 
             throw Error('Alreayd initialised');
 
@@ -62,7 +63,7 @@ export class EnemyManager extends BaseContext {
         this.subscriptions.push(sub1);
         this.updatePageState(page);
         this.startSpawning();
-    }
+    };
 
      private startSpawning(){
         

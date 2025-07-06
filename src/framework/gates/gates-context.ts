@@ -34,6 +34,7 @@ export class GateManager extends BaseContext {
     };
 
     initialise(events: Subject<Event>, page: IPageState, ship: ILocation){
+
         if(this.initialised) 
             throw Error('Already initialised');
 
@@ -60,6 +61,7 @@ export class GateManager extends BaseContext {
         this.subscriptions.push(sub1);
         this.updatePageState(page);
         this.startSpawning();
+        this.initialised = true;
     };
 
     private updateShipLocation(ship: ILocation, check = true) {
@@ -213,6 +215,7 @@ export class GateManager extends BaseContext {
     dispose() {
         super.dispose();
         this.removeGates();
+        this.initialised = false;
     };
 
 }

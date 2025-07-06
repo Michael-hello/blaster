@@ -23,6 +23,7 @@ import Animation from './Animation.vue';
 import { BaseContext, EnemyBuilder, IOptions, MainContext, OptionsService, ShipBuilder, ShipLifeChange, ShipLifeChangeEvent, SubscriptionHandler } from '../framework';
 import {  filter } from "rxjs/operators";
 import { GateBuilder } from "../framework/gates";
+import { Subscription } from "rxjs";
 
 
 @Component({
@@ -39,7 +40,7 @@ export default class Container extends Vue {
   context: MainContext = null;
   options: IOptions = null;
   loaded = false;
-  handler: SubscriptionHandler = new BaseContext();
+  subsription: Subscription = null;
   isAlive = true;
   shipLives = 0;
 
@@ -51,17 +52,8 @@ export default class Container extends Vue {
 
     this.context = new MainContext(shipBuilder, enemyBuilder, gateBuilder);
     this.options = optionsService.getOptions();
+    this.subscribeToEvents();
     this.loaded = true;
-
-    let sub1 = this.context.events.pipe(
-        filter(x => x.topic === ShipLifeChange)
-    ).subscribe((x) => {
-      this.shipLives = Number((x as ShipLifeChangeEvent).remainingLives);
-      this.isAlive = this.shipLives > 0;
-      if(this.shipLives <= 0) this.context.pauseGame();
-    });
-
-    this.handler.subscriptions.push(sub1);
 
     //TO DO: allow user to edit IOptions
   };
@@ -69,6 +61,8 @@ export default class Container extends Vue {
   newGame() {
     if(this.context == null) return;
     this.context.newGame();
+    this.isAlive = true;
+    this.subscribeToEvents();
   };
 
   pauseGame() {
@@ -76,9 +70,24 @@ export default class Container extends Vue {
     this.context.pauseGame();
   };
 
+  subscribeToEvents() {
+
+    if(this.subsription) 
+      this.subsription.unsubscribe();
+
+    this.subsription = this.context.events.pipe(
+        filter(x => x.topic === ShipLifeChange)
+    ).subscribe((x) => {
+      this.shipLives = Number((x as ShipLifeChangeEvent).remainingLives);
+      this.isAlive = this.shipLives > 0;
+      if(this.shipLives <= 0) this.context.pauseGame();
+      console.log(this.shipLives)
+    });
+  };
+
   beforeDestroy() {
-    if(this.handler) {
-      this.handler.dispose();
+    if(this.subsription) {
+      this.subsription.unsubscribe();
     };
     if(this.context) {
       this.context.dispose();
@@ -116,6 +125,7 @@ export default class Container extends Vue {
   font-size: 40px;
   line-height: 40px;
   color: white;
+  user-select: none;
 }
 
 #newGame {

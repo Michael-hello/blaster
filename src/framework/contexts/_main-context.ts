@@ -34,7 +34,8 @@ export class MainContext extends BaseContext {
 
     newGame(){
         this.dispose();
-        this.initialise();
+        this.events = new ReplaySubject();
+        this.initialise(this.page.width, this.page.height);
     };
 
     pauseGame() {
@@ -43,7 +44,7 @@ export class MainContext extends BaseContext {
         this.events.next({ topic: PauseEventTopic, paused: this.paused });
     };
 
-    initialise(width?: number, height?: number){
+    initialise(width: number, height: number){
 
         if(this.ship != null && !this.ship.disposed)
             this.ship.dispose();
@@ -97,6 +98,7 @@ export class MainContext extends BaseContext {
         if(this.gates != null && !this.gates.disposed) {
             this.gates.dispose();
         };
+        this.events.complete();
     };
 
 }
