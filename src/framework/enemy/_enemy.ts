@@ -1,9 +1,10 @@
-import { degreeToRad, radToDegree, SubscriptionHandler, wrapAngle, type IOptions, type ILocation, CollisionCheck, uuid } from "../shared";
+import { degreeToRad, radToDegree, SubscriptionHandler, wrapAngle, type IOptions, type ILocation, CollisionCheck, uuid, type IPauseableChild } from "../shared";
 
-export interface IEnemy {
+export interface IEnemy extends IPauseableChild {
     x: number;
     y: number;
     alive: boolean;
+    dispose(): void;
 }
 
 
@@ -15,6 +16,7 @@ export class Enemy extends SubscriptionHandler implements IEnemy {
     public y = 0;
 
     alive = true;
+    _pause = false;
 
     /** trajectory always in degrees */
     private currentTrajectory = 0;    
@@ -35,12 +37,19 @@ export class Enemy extends SubscriptionHandler implements IEnemy {
         let opts = this.options;
         let ship = this.getShipLocation();
         let collided = CollisionCheck(ship, position, opts.shipSize / 2, opts.enemySize / 2);
-        if(collided) this.collisionDetected(position);
+        if(collided) {
+            this.collisionDetected(position);
+            this.alive = false;
+        };
     };
 
     private updateTrajectory(traj: number){
         this.currentTrajectory = wrapAngle(traj);
         this.previousTrajectories.push(traj);
+    };
+
+    updatePause(pause: boolean) {
+        this._pause = pause;
     };
 
     public startHunting(){
@@ -51,6 +60,8 @@ export class Enemy extends SubscriptionHandler implements IEnemy {
 
         let cycleLength = 100 / this.options.difficulty;
         let interval = setInterval(() => { 
+            if(this._pause) 
+                return;
             if(this.alive)
                 this.moveTowardsShip();
             else
@@ -87,8 +98,8 @@ export class Enemy extends SubscriptionHandler implements IEnemy {
         let prev = this.previousTrajectories;
         
         //TO DO: adjust the value based on difficulty setting and enemy speed
-        if(prev.length > 10) 
-            traj = prev[prev.length - 10];
+        // if(prev.length > 10) 
+        //     traj = prev[prev.length - 10];
 
         let theta = degreeToRad(traj);
         let r = this.options.enemySpeed;
@@ -98,7 +109,6 @@ export class Enemy extends SubscriptionHandler implements IEnemy {
         this.updatePosition(newPos);
 
         this.updateTrajectory(this.trajToShip());
-
     };
 
 }

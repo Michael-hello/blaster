@@ -1,4 +1,4 @@
-import { type IOptions, type ILocation, SubscriptionHandler, uuid, wrapAngle, degreeToRad } from "../shared";
+import { type IOptions, type ILocation, SubscriptionHandler, uuid, wrapAngle, degreeToRad, type IPauseableChild } from "../shared";
 
 export class Gate extends SubscriptionHandler implements IGate {
 
@@ -28,6 +28,7 @@ export class Gate extends SubscriptionHandler implements IGate {
     public length = 0;
     public increment = 0; //length change increment
     private _alive = true;
+    private _pause = false;
 
     get alive(){ return this._alive };
     get rotationSpeed() { return this.options.rotationSpeed };
@@ -47,6 +48,10 @@ export class Gate extends SubscriptionHandler implements IGate {
         return { x:  this.x - x , y: this.y - y }; 
     };
 
+    updatePause(pause: boolean) {
+        this._pause = pause;
+    };
+
     killGate() {
         this._alive = false;
         this.dispose();
@@ -55,6 +60,7 @@ export class Gate extends SubscriptionHandler implements IGate {
     startMovement() {
 
         let interval = setInterval(() => { 
+            if(this._pause || !this._alive) return;
             if(this.length >= 0.9 * this.options.gateLength) this.increment *= -1; 
             if(this.length <= 0.5 * this.options.gateLength) this.increment *= -1; 
             this.updateLength(this.length + this.increment);
@@ -79,7 +85,7 @@ export class Gate extends SubscriptionHandler implements IGate {
 };
 
 
-export interface IGate extends ILocation {
+export interface IGate extends ILocation, IPauseableChild {
 
     readonly alive: boolean;
     readonly id: string;
@@ -92,4 +98,6 @@ export interface IGate extends ILocation {
     position2: ILocation;
 
     killGate: () => void;
+
+    dispose: () => void;
 };

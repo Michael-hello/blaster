@@ -48,6 +48,8 @@ export class EnemyManager extends BaseContext {
         this.shipLocation.x = ship.x;
         this.shipLocation.y = ship.y;
 
+        this.initialiseEvents(this.events, this.enemies);
+
         let sub1 = this.events.pipe(
         ).subscribe((event) => {
             if(isShipMoveEvent(event)){
@@ -56,6 +58,7 @@ export class EnemyManager extends BaseContext {
             };
         });
 
+        this.initialised = true;
         this.subscriptions.push(sub1);
         this.updatePageState(page);
         this.startSpawning();
@@ -83,7 +86,12 @@ export class EnemyManager extends BaseContext {
 
     private addEnemies(count: number, delay: number){
 
-        if(count == 0) return;
+        if(count == 0 || this.disposed) return;
+
+        let newCount = this.paused ? count : count - 1;
+        setTimeout(() => this.addEnemies(newCount, delay), delay);
+
+        if( this.paused ) return;
 
         const getShipLocation = () => this.shipLocation;
         const collisionDetected = (loc: ILocation) => {
@@ -102,10 +110,7 @@ export class EnemyManager extends BaseContext {
         else start[1] = start[1] * scalar;
 
         enemy.updatePosition({ x: start[0], y: start[1] });
-        enemy.startHunting(); 
-
-        setTimeout(() => this.addEnemies(count - 1, delay), delay);      
-        
+        enemy.startHunting();         
     };
 
     private killEnemies(event: GateSmashEvent) {
@@ -113,7 +118,7 @@ export class EnemyManager extends BaseContext {
         let gate = event.gate;
         let radius = gate.length * 0.75;
 
-        for(let enemy of this.enemies) {
+        for(let enemy of this.enemies.filter(x => x.alive)) {
             if(CollisionCheck(gate, enemy, this.enemySize, radius)) {
                 enemy.alive = false;
                 let event: EnermyDeathEvent = { topic: EnemyDeath, x: enemy.x, y: enemy.y }
@@ -121,6 +126,15 @@ export class EnemyManager extends BaseContext {
             };
         };
 
+    };
+
+    dispose() {
+        super.dispose();
+        for(let enemy of this.enemies) {
+            enemy.alive = false;
+            enemy.dispose();
+        };
+        this.initialised = false;
     };
 
 }

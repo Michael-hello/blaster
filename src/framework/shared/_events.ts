@@ -18,6 +18,8 @@ export const ShipEnemyCollision = "topic:enemy:collision";
 export const ShipGateCollision = "topic:gate:collision";
 export const EnemyDeath = "topic:enemy:death";
 
+export const PauseEventTopic = "topic:game:paused";
+
 
 
 export interface UserEvent extends Event {
@@ -35,6 +37,8 @@ export interface GateSmashEvent extends Event, ILocation { //gate explosion - en
 }; 
 export interface EnermyDeathEvent extends Event, ILocation { };
 
+export interface PauseEvent extends Event { pause: boolean };
+
 
 
 export function isUserEvent(event: Event): event is UserEvent {
@@ -48,7 +52,10 @@ export function isGateSmashEvent(event: Event): event is GateSmashEvent {
 };
 export function isCollisionEvent(event: Event): event is CollisionEvent {
     return event.topic == ShipEnemyCollision || event.topic == ShipGateCollision
-}
+};
+export function isPauseEvent(event: Event): event is PauseEvent {
+    return event.topic == PauseEventTopic;
+};
 
 
 /**

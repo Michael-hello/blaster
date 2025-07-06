@@ -41,6 +41,8 @@ export class GateManager extends BaseContext {
         this.updateShipLocation(ship, false);
         this.updateShipLocation(ship, false);
 
+        this.initialiseEvents(this.events, this.gates);
+
         let sub1 = this.events.pipe(
         ).subscribe((event) => {
             if(isShipMoveEvent(event)){
@@ -50,6 +52,7 @@ export class GateManager extends BaseContext {
 
         let targetFps = 30;
         let interval = setInterval(() => { 
+            if(this.paused) return;
             this.collisionCheck();
         }, 1000 / targetFps);
 
@@ -101,6 +104,8 @@ export class GateManager extends BaseContext {
 
 
     private collisionCheck() {
+
+        if(this.paused) return;
 
         let opts = this.options;
         let ship = JSON.parse(JSON.stringify(this.shipLocation));
@@ -159,6 +164,7 @@ export class GateManager extends BaseContext {
         this.addGates(4);
 
         let interval = setInterval(() => { 
+            if(this.paused) return;
             this.addGates(1);
             this.removeGates();
          }, 1000 );
@@ -197,10 +203,16 @@ export class GateManager extends BaseContext {
     private removeGates() {
         for(let gate of this.gates) {
             if(!gate.alive) {
+                gate.dispose();
                 let index = this.gates.findIndex(x => x.id == gate.id);
                 this.gates.splice(index, 1);
             }
         };
+    };
+
+    dispose() {
+        super.dispose();
+        this.removeGates();
     };
 
 }

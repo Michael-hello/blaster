@@ -8,7 +8,7 @@
     />
 
     <div v-if="!isAlive" id=game-over>
-      <span id=go-text>GAME OVER</span>
+      <span>GAME OVER</span>
       <button @click="newGame" id="newGame">New Game</button>
     </div>
 
@@ -54,10 +54,11 @@ export default class Container extends Vue {
     this.loaded = true;
 
     let sub1 = this.context.events.pipe(
-        filter(x => x.topic == ShipLifeChange)
+        filter(x => x.topic === ShipLifeChange)
     ).subscribe((x) => {
       this.shipLives = Number((x as ShipLifeChangeEvent).remainingLives);
       this.isAlive = this.shipLives > 0;
+      if(this.shipLives <= 0) this.context.pauseGame();
     });
 
     this.handler.subscriptions.push(sub1);
@@ -68,7 +69,12 @@ export default class Container extends Vue {
   newGame() {
     if(this.context == null) return;
     this.context.newGame();
-  }
+  };
+
+  pauseGame() {
+    if(this.context == null) return;
+    this.context.pauseGame();
+  };
 
   beforeDestroy() {
     if(this.handler) {
@@ -99,17 +105,29 @@ export default class Container extends Vue {
 
 #game-over {
   position: relative;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
   width: 250px;
   top: 40%;
-  left: 30%;
-}
-
-#go-text {
+  left: calc(50% - 125px);
   text-align: center;
   font-weight: 600;
   font-size: 40px;
+  line-height: 40px;
   color: white;
+}
+
+#newGame {
+  width: 160px;
+  height: 45px;
+  border-radius: 5px;
+  font-size: 26px;
+  line-height: 26px;
+  margin: auto;
+};
+
+span { 
   user-select: none;
 }
 

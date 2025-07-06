@@ -43,6 +43,8 @@ export class ShipContext extends BaseContext {
         this.updateLocation({ x , y });
         this.updateLives(this.state.lives);
 
+        this.initialiseEvents(this.events);
+
         let sub1 = this.events.pipe(
             filter(x => isUserEvent(x))
         ).subscribe((x) => {
@@ -75,6 +77,8 @@ export class ShipContext extends BaseContext {
     };
 
     updateLocation(position: { x?: number, y?: number} ){
+        if(this.paused) return;
+
         let original = cloneObject(this.state.location);
         let { x , y } = position;
         if(x) this.state.location.x = x;
@@ -92,7 +96,7 @@ export class ShipContext extends BaseContext {
     };
 
     move(){
-        // if(!this.moving) return;
+        if(this.paused) return;
 
         let move = this.options.shipSpeed / this.options.difficulty;
         let size = this.options.shipSize / 2;
@@ -104,5 +108,9 @@ export class ShipContext extends BaseContext {
         if(this.keyDown['d']) this.updateLocation({ x: Math.min(this.x + move, this.page.width - (size * 2) ) });
 
         this.events.next({ topic: ShipMoveEvent, x: this.x, y: this.y });
+    };
+
+    dispose(): void {
+        super.dispose();
     };
 }

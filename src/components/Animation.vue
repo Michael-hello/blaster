@@ -10,20 +10,24 @@
         version="1.2"
     >
       <enemy-manager 
+        v-if="enemyContext"
         :context=enemyContext
         :options="options"
       />
 
       <gate-manager 
+        v-if="gateContext"
         :context=gateContext
         :options="options"
       />
 
       <effects 
+        v-if="events"
         :events=events
       />
 
       <ship 
+        v-if="shipContext"
         :context=shipContext 
         :options="options"
       />
@@ -87,7 +91,7 @@ export default class Animation extends Vue {
             let size = elmt.getBoundingClientRect();
             this.elmLeft = size.left;
             this.elmTop = size.top;
-            this.elmHeight = Math.ceil(size.height);
+            this.elmHeight = Math.floor(size.height);
             this.elmWidth = size.width;
             this.context.updateDiemnsions(this.elmWidth, this.elmHeight);
         };
@@ -96,7 +100,6 @@ export default class Animation extends Vue {
         this.observeHeight(cllBck);
 
         this.context.initialise(this.elmWidth, this.elmHeight);
-        this.$emit("ship", this.context.ship);
         this.loaded = true;
     };
 
@@ -145,6 +148,7 @@ export default class Animation extends Vue {
 #svg-container{
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 
 .svg{

@@ -1,4 +1,5 @@
-import type { SubscriptionLike } from "rxjs";
+import type { Subject, SubscriptionLike } from "rxjs";
+import { isPauseEvent, type Event } from "./_events";
 
 
 
@@ -32,8 +33,38 @@ export abstract class SubscriptionHandler {
 
 export class BaseContext extends SubscriptionHandler {
 
-    constructor(){
+    constructor() {
         super()
-    }
+    };
+
+    paused: boolean = false;
+    children: IPauseableChild[] = [];
+
+    initialiseEvents(events: Subject<Event>, children?: IPauseableChild[]) {
+        
+        if(this.children != null)
+            this.children = children as IPauseableChild[];
+
+        let sub1 = events.pipe(
+        ).subscribe((event) => {
+            if(isPauseEvent(event)){
+                this.paused = event.paused;
+                this.pauseChildren(this.paused);
+            };
+        });
+        this.subscriptions.push(sub1);
+    };
+
+    private pauseChildren(pause: boolean) {
+        if(this.children == null) return
+        for(let child of this.children) {
+            child.updatePause(pause);
+        };
+    };
    
 };
+
+
+export interface IPauseableChild {
+    updatePause: (pause: boolean) => void;
+}

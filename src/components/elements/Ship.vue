@@ -23,10 +23,6 @@ export default class Ship extends Vue {
     @Prop({ required: true }) options: IOptions;
 
     loaded = true;
-    
-    async mounted(){
-       console.log('SHIP',this.context, this.context.x, this.options)
-    };
 
     get size() { return this.options.shipSize }
 
