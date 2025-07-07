@@ -1,11 +1,10 @@
 <template>
 
-    <rect 
+    <ship-icon 
         :width="size" 
         :height="size" 
         :x=shipX 
         :y=shipY 
-        style="fill:rgb(255,90,255); stroke-width:3; stroke:rgb(255,90,255)" 
     />
 
 </template>
@@ -15,8 +14,13 @@
 
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { IOptions, ShipContext } from "../../framework";
+import ShipIcon from "./ShipIcon.vue";
 
-@Component({})
+@Component({
+  components: {
+    ShipIcon
+  }
+})
 export default class Ship extends Vue {
 
     @Prop({ required: true }) context: ShipContext;

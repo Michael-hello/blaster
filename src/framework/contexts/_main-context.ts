@@ -1,10 +1,10 @@
 import { ReplaySubject, type Subject, type SubscriptionLike } from "rxjs";
-import { debounceTime, filter, map } from "rxjs/operators";
 import type { ShipContext, Event, IEnemyCtxState, IPageState, IBuilder, IShipState, OptionsService, EnemyManager } from "..";
 import { PauseEventTopic } from '..';
 import type { GateManager, IGateState } from "../gates";
 import { BaseContext } from "../shared/_base-context";
 import * as _ from "lodash";
+import { ScoreContext } from "./_score";
 
 export class MainContext extends BaseContext {
 
@@ -12,6 +12,7 @@ export class MainContext extends BaseContext {
     public ship: ShipContext = null as any;
     public enemy: EnemyManager = null as any;
     public gates: GateManager = null as any;
+    public score: ScoreContext = null as any;
 
     private _initialised = false;
 
@@ -52,10 +53,13 @@ export class MainContext extends BaseContext {
             this.enemy.dispose();
         if(this.gates != null && !this.gates.disposed)
             this.gates.dispose();
+        if(this.score != null && !this.score.disposed)
+            this.score.dispose();
 
         this.ship = this.shipBuilder.build();
         this.enemy = this.enemyBuilder.build();
         this.gates = this.gateBuilder.build();
+        this.score = new ScoreContext();
 
         this.ship.initialise(this.events, this.page);
         let ship = { x: this.ship.x, y: this.ship.y };
@@ -67,6 +71,7 @@ export class MainContext extends BaseContext {
 
         this.enemy.initialise(this.events, this.page, ship);
         this.gates.initialise(this.events, this.page, ship);
+        this.score.initialise(this.events);
         this._initialised = true;
     };
 
@@ -98,6 +103,8 @@ export class MainContext extends BaseContext {
         if(this.gates != null && !this.gates.disposed) {
             this.gates.dispose();
         };
+        if(this.score != null && !this.score.disposed)
+            this.score.dispose();
         this.events.complete();
     };
 

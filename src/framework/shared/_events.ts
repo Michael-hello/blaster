@@ -35,7 +35,7 @@ export interface CollisionEvent extends Event, ILocation { }; //filter
 export interface GateSmashEvent extends Event, ILocation { //gate explosion - enemy death
     gate: IGate;
 }; 
-export interface EnermyDeathEvent extends Event, ILocation { };
+export interface EnemyDeathEvent extends Event, ILocation { };
 
 export interface PauseEvent extends Event { pause: boolean };
 
@@ -55,6 +55,9 @@ export function isCollisionEvent(event: Event): event is CollisionEvent {
 };
 export function isPauseEvent(event: Event): event is PauseEvent {
     return event.topic == PauseEventTopic;
+};
+export function isScoreableEvent(event: Event) {
+    return event.topic == ShipGateSmashEvent || event.topic == EnemyDeath
 };
 
 

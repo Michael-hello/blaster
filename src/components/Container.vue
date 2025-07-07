@@ -1,6 +1,14 @@
 <template>
   <div id="main-container">
 
+    <Banner 
+      v-if="loaded"
+      :context="scoreContext"
+      :isAlive="isAlive"
+      :shipLives="shipLives"
+      :initialLives="initialLives"
+    />
+
     <Animation 
       v-if="loaded && isAlive"
       :context="context"
@@ -20,6 +28,7 @@
 
 import { Component, Vue, Prop } from "vue-property-decorator";
 import Animation from './Animation.vue';
+import Banner from "./Banner.vue";
 import { BaseContext, EnemyBuilder, IOptions, MainContext, OptionsService, ShipBuilder, ShipLifeChange, ShipLifeChangeEvent, SubscriptionHandler } from '../framework';
 import {  filter } from "rxjs/operators";
 import { GateBuilder } from "../framework/gates";
@@ -28,7 +37,8 @@ import { Subscription } from "rxjs";
 
 @Component({
   components: {
-      Animation
+      Animation,
+      Banner
   }
 })
 /**
@@ -43,6 +53,15 @@ export default class Container extends Vue {
   subsription: Subscription = null;
   isAlive = true;
   shipLives = 0;
+
+  get initialLives() {
+    if(this.options == null) return 0;
+    return this.options.shipLives;
+  };
+
+  get scoreContext() {
+    return this.context == null ? null : this.context.score;
+  };
 
   async created(){
     let optionsService = new OptionsService();
@@ -79,7 +98,7 @@ export default class Container extends Vue {
         filter(x => x.topic === ShipLifeChange)
     ).subscribe((x) => {
       this.shipLives = Number((x as ShipLifeChangeEvent).remainingLives);
-      this.isAlive = this.shipLives > 0;
+      // this.isAlive = this.shipLives > 0;
       if(this.shipLives <= 0) this.context.pauseGame();
       console.log(this.shipLives)
     });
@@ -103,13 +122,16 @@ export default class Container extends Vue {
   height: 100%;
   width: 100%;
 
+  display: flex;
+  flex-direction: column;
+
   max-height: 1000px;
   max-width: 760px;
 
   background-color: black;
 
-  /* position: absolute; */
   margin: auto;
+  overflow: hidden;
 }
 
 #game-over {

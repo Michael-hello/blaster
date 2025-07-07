@@ -1,5 +1,5 @@
 import { filter, type Subject } from "rxjs";
-import { EnemyDeath, type EnermyDeathEvent, CollisionCheck, type GateSmashEvent, ShipGateSmashEvent, type EnemyCollisionEvent, type ILocation, ShipEnemyCollision, BaseContext, ShipMoveEvent, isShipMoveEvent, type Event, type IOptions, type IPageState } from "..";
+import { EnemyDeath, type EnemyDeathEvent, CollisionCheck, type GateSmashEvent, ShipGateSmashEvent, type EnemyCollisionEvent, type ILocation, ShipEnemyCollision, BaseContext, ShipMoveEvent, isShipMoveEvent, type Event, type IOptions, type IPageState } from "..";
 import { Enemy, type IEnemy } from "./_enemy";
 import type { IEnemyCtxState } from "./_enemy-builder";
 
@@ -122,7 +122,7 @@ export class EnemyManager extends BaseContext {
         for(let enemy of this.enemies.filter(x => x.alive)) {
             if(CollisionCheck(gate, enemy, this.enemySize, radius)) {
                 enemy.alive = false;
-                let event: EnermyDeathEvent = { topic: EnemyDeath, x: enemy.x, y: enemy.y }
+                let event: EnemyDeathEvent = { topic: EnemyDeath, x: enemy.x, y: enemy.y }
                 this.events.next(event);
             };
         };
