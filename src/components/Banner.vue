@@ -2,12 +2,12 @@
   <div id="banner-container" v-if="loaded && context != null">
 
     <div id="score" class="banner-item">
-        <p>Score:</p>   
+        <p>SCORE:</p>   
         <p id=score-label>{{ score }}</p>
     </div>
 
     <div id="lives" class="banner-item">
-        <p>Lives:</p>
+        <p>LIVES:</p>
 
         <svg 
             xmlns="http://www.w3.org/2000/svg"
@@ -21,7 +21,7 @@
                     :width="shipSize" 
                     :height="shipSize" 
                     :x="(index) * shipSize" 
-                    :y="0" 
+                    :y="-shipSize / 10" 
                 />
             </template>
         </svg>
@@ -64,12 +64,7 @@ export default class Banner extends Vue {
 
   async created() {
     this.loaded = true;
-  };
-
-  mounted(){
-    console.log(this.shipLives)
-  };
-  
+  };  
 }
 
 </script>
@@ -78,7 +73,7 @@ export default class Banner extends Vue {
 <style scoped>
 
 #banner-container{
-  height: 80px;
+  height: 65px;
   width: 100%;
 
   background-color: blue;
@@ -93,7 +88,7 @@ export default class Banner extends Vue {
 .banner-item {
   height: calc(100% - 20px);
   width: calc(100% - 20px);
-  border: 1px solid black;
+  /* border: 1px solid black; */
   margin: 10px;
 
   font-size: 25px;
@@ -117,8 +112,8 @@ p {
 }
 
 #score-label {
-    margin-left: 30px;
-    color: red;
+    margin: 0 0 0 10px;
+    color: white;
 };
 
 .svg{
