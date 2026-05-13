@@ -13,6 +13,7 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 
 import Container from './Container.vue';
 
+
 @Component({
   components: {
     Container
@@ -33,6 +34,7 @@ export default class Main extends Vue {
   height: 100%;
   width: 100%;
   background-color: gray;
+  background-image: url('./../assets/stars-bckgrnd.jpg');
   position: relative;
   overflow: hidden;
 }

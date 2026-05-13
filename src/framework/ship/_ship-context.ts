@@ -58,7 +58,7 @@ export class ShipContext extends BaseContext {
         ).subscribe((x) => {
             if(this.isImmune) return;
             this.isImmune = true;
-            setTimeout(() => { this.isImmune = false }, 2500);
+            setTimeout(() => { this.isImmune = false }, 2000);
             this.updateLives(this.currentLives - 1);
         });
 

@@ -97,8 +97,9 @@ export default class Container extends Vue {
     this.subsription = this.context.events.pipe(
         filter(x => x.topic === ShipLifeChange)
     ).subscribe((x) => {
+      if(!(x as ShipLifeChangeEvent).remainingLives) return;
       this.shipLives = Number((x as ShipLifeChangeEvent).remainingLives);
-      // this.isAlive = this.shipLives > 0;
+      this.isAlive = this.shipLives > 0;
       if(this.shipLives <= 0) this.context.pauseGame();
       console.log(this.shipLives)
     });
