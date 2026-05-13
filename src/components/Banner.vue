@@ -20,7 +20,7 @@
                     :key=index
                     :width="shipSize" 
                     :height="shipSize" 
-                    :x="(index+1) * shipSize" 
+                    :x="(index) * shipSize" 
                     :y="0" 
                 />
             </template>
@@ -64,6 +64,10 @@ export default class Banner extends Vue {
 
   async created() {
     this.loaded = true;
+  };
+
+  mounted(){
+    console.log(this.shipLives)
   };
   
 }
@@ -109,6 +113,7 @@ p {
 #lives {
     display: flex;
     flex-direction: row;
+    gap: 10px;
 }
 
 #score-label {

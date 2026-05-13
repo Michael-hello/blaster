@@ -28,14 +28,16 @@ export default class Ship extends Vue {
 
     loaded = true;
 
-    get size() { return this.options.shipSize }
+    get size() { return this.options.shipSize * 3.5 }
+
+    get direction() {
+      return this.context.direction;
+    };
 
     /** x and y attributes defines y-position of the top-left corner of the rect 
      * therefore need to correct for ship size */
     get shipX(){ return this.context.x }
     get shipY(){ return this.context.y  }
-
-
 
 }
 
