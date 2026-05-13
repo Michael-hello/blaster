@@ -1,6 +1,6 @@
 <template>
 
-  <svg viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" v-if="showIcon">
     <!-- Main saucer disc (blue) -->
     <ellipse 
       cx="65" 
@@ -170,6 +170,8 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 
 @Component({})
 export default class ShipIcon extends Vue {
+
+    @Prop({ default: true }) showIcon: boolean;
 
     
 }

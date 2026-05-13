@@ -5,6 +5,7 @@
         :height="size" 
         :x=shipX 
         :y=shipY 
+        :showIcon=showShip
     />
 
 </template>
@@ -27,6 +28,8 @@ export default class Ship extends Vue {
     @Prop({ required: true }) options: IOptions;
 
     loaded = true;
+    interval: NodeJS.Timer = null;
+    showShip = true;
 
     get size() { return this.options.shipSize * 3.5 }
 
@@ -38,6 +41,21 @@ export default class Ship extends Vue {
      * therefore need to correct for ship size */
     get shipX(){ return this.context.x }
     get shipY(){ return this.context.y  }
+
+    mounted(){
+      /** used to "flash" the ship when it's immune */
+      this.interval = setInterval(() => {
+        if(this.context.isImmune && this.context.currentLives > 0) {
+          this.showShip = !this.showShip;
+        } else {
+          this.showShip = true;
+        };
+      }, 100);
+    };
+
+    beforeDestroy(){
+      if(this.interval) clearInterval(this.interval);
+    };
 
 }
 

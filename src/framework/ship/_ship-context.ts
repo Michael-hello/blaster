@@ -21,6 +21,7 @@ export class ShipContext extends BaseContext {
     moving = false;
     direction = 0;     /** direction ship is facing in degrees */
     currentLives = Number.MAX_VALUE;
+    isImmune = false; /** cannot lose lives - triggers after life loss for X seconds */
 
     constructor(
         private state: IShipState,
@@ -55,6 +56,9 @@ export class ShipContext extends BaseContext {
         let sub2 = this.events.pipe(
             filter(x => isCollisionEvent(x))
         ).subscribe((x) => {
+            if(this.isImmune) return;
+            this.isImmune = true;
+            setTimeout(() => { this.isImmune = false }, 2500);
             this.updateLives(this.currentLives - 1);
         });
 
