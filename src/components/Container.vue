@@ -15,10 +15,16 @@
       :options="options"
     />
 
-    <div v-if="!isAlive" id=game-over>
+    <div v-if="!isAlive" id="game-over">
       <span>GAME OVER</span>
       <button @click="newGame" id="newGame">New Game</button>
     </div>
+
+    <KeyPad 
+      v-if="loaded && isAlive"
+      :context="context"
+      :options="options"
+    />
 
   </div>
 </template>
@@ -29,6 +35,7 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import Animation from './Animation.vue';
 import Banner from "./Banner.vue";
+import KeyPad from "./KeyPad.vue";
 import { BaseContext, EnemyBuilder, IOptions, MainContext, OptionsService, ShipBuilder, ShipLifeChange, ShipLifeChangeEvent, SubscriptionHandler } from '../framework';
 import {  filter } from "rxjs/operators";
 import { GateBuilder } from "../framework/gates";
@@ -38,7 +45,8 @@ import { Subscription } from "rxjs";
 @Component({
   components: {
       Animation,
-      Banner
+      Banner,
+      KeyPad
   }
 })
 /**
@@ -131,7 +139,7 @@ export default class Container extends Vue {
 
   background-color: black;
 
-  margin: auto;
+  margin: 0 auto;
   overflow: hidden;
 }
 
