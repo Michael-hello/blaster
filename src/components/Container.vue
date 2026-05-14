@@ -21,7 +21,7 @@
     </div>
 
     <KeyPad 
-      v-if="loaded && isAlive"
+      v-if="loaded && isAlive && isTouchDevice"
       :context="context"
       :options="options"
     />
@@ -69,6 +69,10 @@ export default class Container extends Vue {
 
   get scoreContext() {
     return this.context == null ? null : this.context.score;
+  };
+
+  get isTouchDevice() {
+    return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.maxTouchPoints > 0);
   };
 
   async created(){
@@ -136,7 +140,7 @@ export default class Container extends Vue {
   max-height: 1000px;
   max-width: 760px;
 
-  background-color: black;
+  background-color: #1b2243;
 
   margin: 0 auto;
   overflow: hidden;

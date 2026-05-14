@@ -15,7 +15,7 @@
             :viewBox="viewbox"
             class=svg
             v-if="shipLives > 0">
-            
+
             <template v-for="(ship, index) in shipLives">
                 <ship-icon 
                     :key=index
@@ -77,7 +77,7 @@ export default class Banner extends Vue {
   height: 65px;
   width: 100%;
 
-  background-color: blue;
+  background-color: #7a231a;
 
   user-select: none;
 

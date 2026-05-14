@@ -69,7 +69,7 @@ export default class KeyPad extends Vue {
         position: relative;
         bottom: 0;
         left: 0;
-        height: 80px;
+        height: 100px;
         width: 100%;
         display: grid;
         grid-template-columns: 1fr 3fr 1fr;
@@ -93,12 +93,12 @@ export default class KeyPad extends Vue {
     }
 
     .btn {
-        background-color: rgba(255, 255, 255, 0.2);
+        background-color: rgba(87, 84, 84, 0.7);
         border: 1px solid white;
         border-radius: 5px;
         color: white;
         font-size: 20px;
-        font-weight: 600;
+        font-weight: 800;
         display: flex;
         align-items: center;
         justify-content: center;
