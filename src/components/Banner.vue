@@ -14,7 +14,8 @@
             version="1.2"
             :viewBox="viewbox"
             class=svg
-        >
+            v-if="shipLives > 0">
+            
             <template v-for="(ship, index) in shipLives">
                 <ship-icon 
                     :key=index

@@ -109,7 +109,6 @@ export default class Container extends Vue {
       this.shipLives = Number((x as ShipLifeChangeEvent).remainingLives);
       this.isAlive = this.shipLives > 0;
       if(this.shipLives <= 0) this.context.pauseGame();
-      console.log(this.shipLives)
     });
   };
 
